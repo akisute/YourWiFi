@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.util.Log;
 
+import com.akisute.yourwifi.app.util.GlobalEventBus;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,20 +21,20 @@ import java.util.List;
  * - After calling startScan(), WifiManager automatically scans for Wifi Networks in periodic times. This period is defined in Android System on build time, that means it's device dependent.
  * - Looks like scanning keeps running until Wifi is turned off or enters sleeping mode. There's no explicit method to immediately stop scans.
  */
-public class WifiNetworkManager {
+public class NetworkManager {
 
     private Context mContext;
     private ScanResultsAvailableReceiver mScanResultsAvailableReceiver;
     private boolean mScanning;
     private WifiManager.WifiLock mWifiLock;
 
-    private static WifiNetworkManager INSTANCE = new WifiNetworkManager();
+    private static NetworkManager INSTANCE = new NetworkManager();
 
-    public static WifiNetworkManager getInstance() {
+    public static NetworkManager getInstance() {
         return INSTANCE;
     }
 
-    private WifiNetworkManager() {
+    private NetworkManager() {
         mScanResultsAvailableReceiver = new ScanResultsAvailableReceiver();
     }
 
@@ -49,7 +53,7 @@ public class WifiNetworkManager {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         mContext.registerReceiver(mScanResultsAvailableReceiver, intentFilter);
-        Log.d(WifiNetworkManager.class.getSimpleName(), String.format("Registered in context %s.", context));
+        Log.d(NetworkManager.class.getSimpleName(), String.format("Registered in context %s.", context));
     }
 
     public void unregister() {
@@ -62,7 +66,7 @@ public class WifiNetworkManager {
             mContext.unregisterReceiver(mScanResultsAvailableReceiver);
             mContext = null;
         }
-        Log.d(WifiNetworkManager.class.getSimpleName(), "Unregistered.");
+        Log.d(NetworkManager.class.getSimpleName(), "Unregistered.");
     }
 
     public boolean startScan() {
@@ -70,7 +74,7 @@ public class WifiNetworkManager {
 
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         if (mWifiLock == null) {
-            mWifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, WifiNetworkManager.class.getSimpleName());
+            mWifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, NetworkManager.class.getSimpleName());
         }
         if (!mWifiLock.isHeld()) {
             mWifiLock.acquire();
@@ -78,7 +82,7 @@ public class WifiNetworkManager {
 
         boolean started = wifiManager.startScan();
         mScanning |= started; // if mScanning is already true, assume WifiManager is already scanning anyway. The only case mScanning == false is when not already started and the latest startScan failed as well.
-        Log.d(WifiNetworkManager.class.getSimpleName(), String.format("Started scanning: %b", mScanning));
+        Log.d(NetworkManager.class.getSimpleName(), String.format("Started scanning: %b", mScanning));
         return mScanning;
     }
 
@@ -101,13 +105,30 @@ public class WifiNetworkManager {
             if (scanResultList == null) {
                 return;
             }
+
+            // TODO: Needs to consider about Network list update policy.
+            List<Network> networkList = new ArrayList<Network>(scanResultList.size());
             for (ScanResult scanResult : scanResultList) {
-                Network network = Network.newNetwork(scanResult);
+                Network network = Network.newInstance(scanResult);
                 if (network == null) {
                     continue;
                 }
-                Log.d(WifiNetworkManager.class.getSimpleName(), network.getDescription());
+                networkList.add(network);
             }
+            GlobalEventBus.getInstance().postInMainThread(new OnScanResultsUpdateEvent(networkList));
+        }
+    }
+
+    public static class OnScanResultsUpdateEvent {
+
+        private List<Network> mNetworkList;
+
+        public OnScanResultsUpdateEvent(List<Network> networkList) {
+            mNetworkList = networkList;
+        }
+
+        public List<Network> getNetworkList() {
+            return mNetworkList;
         }
     }
 }

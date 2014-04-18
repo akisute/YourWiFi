@@ -94,7 +94,7 @@ public class Network {
     private int mCryptoType; // enum value
     private String mDescription;
 
-    public static Network newNetwork(ScanResult scanResult) {
+    public static Network newInstance(ScanResult scanResult) {
         Network network = new Network();
         network.update(scanResult);
         if (!network.validate()) {
@@ -103,7 +103,7 @@ public class Network {
         return network;
     }
 
-    public static Network newNetwork(String bssid, String ssid, int frequency, String capabilities, int level, long timestamp, int networkType) {
+    public static Network newInstance(String bssid, String ssid, int frequency, String capabilities, int level, long timestamp, int networkType) {
         Network network = new Network();
         network.update(bssid, ssid, frequency, capabilities, level, timestamp, networkType);
         if (!network.validate()) {
