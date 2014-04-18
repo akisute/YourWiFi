@@ -33,6 +33,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance();
+        wifiNetworkManager.unregister();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
