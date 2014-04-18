@@ -102,7 +102,11 @@ public class WifiNetworkManager {
                 return;
             }
             for (ScanResult scanResult : scanResultList) {
-                Log.d(WifiNetworkManager.class.getSimpleName(), scanResult.toString());
+                Network network = Network.newNetwork(scanResult);
+                if (network == null) {
+                    continue;
+                }
+                Log.d(WifiNetworkManager.class.getSimpleName(), network.getDescription());
             }
         }
     }
