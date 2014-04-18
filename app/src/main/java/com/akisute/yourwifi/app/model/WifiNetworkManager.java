@@ -42,7 +42,7 @@ public class WifiNetworkManager {
             if (mContext.equals(context)) {
                 return;
             } else {
-                throw new IllegalStateException(String.format("Already registered in another context %s", mContext.toString()));
+                throw new IllegalStateException(String.format("Already registered in another context %s", mContext));
             }
         }
         mContext = context;
