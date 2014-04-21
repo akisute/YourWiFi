@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.akisute.yourwifi.app.util.GlobalEventBus;
@@ -21,20 +20,20 @@ import java.util.List;
  * - After calling startScan(), WifiManager automatically scans for Wifi Networks in periodic times. This period is defined in Android System on build time, that means it's device dependent.
  * - Looks like scanning keeps running until Wifi is turned off or enters sleeping mode. There's no explicit method to immediately stop scans.
  */
-public class NetworkManager {
+public class NetworkScanManager {
 
     private Context mContext;
     private ScanResultsAvailableReceiver mScanResultsAvailableReceiver;
     private boolean mScanning;
     private WifiManager.WifiLock mWifiLock;
 
-    private static NetworkManager INSTANCE = new NetworkManager();
+    private static NetworkScanManager INSTANCE = new NetworkScanManager();
 
-    public static NetworkManager getInstance() {
+    public static NetworkScanManager getInstance() {
         return INSTANCE;
     }
 
-    private NetworkManager() {
+    private NetworkScanManager() {
         mScanResultsAvailableReceiver = new ScanResultsAvailableReceiver();
     }
 
@@ -53,7 +52,7 @@ public class NetworkManager {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         mContext.registerReceiver(mScanResultsAvailableReceiver, intentFilter);
-        Log.d(NetworkManager.class.getSimpleName(), String.format("Registered in context %s.", context));
+        Log.d(NetworkScanManager.class.getSimpleName(), String.format("Registered in context %s.", context));
     }
 
     public void unregister() {
@@ -66,7 +65,7 @@ public class NetworkManager {
             mContext.unregisterReceiver(mScanResultsAvailableReceiver);
             mContext = null;
         }
-        Log.d(NetworkManager.class.getSimpleName(), "Unregistered.");
+        Log.d(NetworkScanManager.class.getSimpleName(), "Unregistered.");
     }
 
     public boolean startScan() {
@@ -74,7 +73,7 @@ public class NetworkManager {
 
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         if (mWifiLock == null) {
-            mWifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, NetworkManager.class.getSimpleName());
+            mWifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, NetworkScanManager.class.getSimpleName());
         }
         if (!mWifiLock.isHeld()) {
             mWifiLock.acquire();
@@ -82,7 +81,7 @@ public class NetworkManager {
 
         boolean started = wifiManager.startScan();
         mScanning |= started; // if mScanning is already true, assume WifiManager is already scanning anyway. The only case mScanning == false is when not already started and the latest startScan failed as well.
-        Log.d(NetworkManager.class.getSimpleName(), String.format("Started scanning: %b", mScanning));
+        Log.d(NetworkScanManager.class.getSimpleName(), String.format("Started scanning: %b", mScanning));
         return mScanning;
     }
 
@@ -106,7 +105,6 @@ public class NetworkManager {
                 return;
             }
 
-            // TODO: Needs to consider about Network list update policy.
             List<Network> networkList = new ArrayList<Network>(scanResultList.size());
             for (ScanResult scanResult : scanResultList) {
                 Network network = Network.newInstance(scanResult);
@@ -115,15 +113,15 @@ public class NetworkManager {
                 }
                 networkList.add(network);
             }
-            GlobalEventBus.getInstance().postInMainThread(new OnScanResultsUpdateEvent(networkList));
+            GlobalEventBus.getInstance().postInMainThread(new OnNewScanResultsEvent(networkList));
         }
     }
 
-    public static class OnScanResultsUpdateEvent {
+    public static class OnNewScanResultsEvent {
 
         private List<Network> mNetworkList;
 
-        public OnScanResultsUpdateEvent(List<Network> networkList) {
+        public OnNewScanResultsEvent(List<Network> networkList) {
             mNetworkList = networkList;
         }
 

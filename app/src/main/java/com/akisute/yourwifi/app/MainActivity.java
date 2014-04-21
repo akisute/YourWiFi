@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.akisute.yourwifi.app.model.NetworkManager;
+import com.akisute.yourwifi.app.model.NetworkScanManager;
 
 
 public class MainActivity extends Activity {
@@ -15,16 +15,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NetworkManager networkManager = NetworkManager.getInstance();
-        networkManager.registerInContext(getApplicationContext());
-        networkManager.startScan();
+        NetworkScanManager networkScanManager = NetworkScanManager.getInstance();
+        networkScanManager.registerInContext(getApplicationContext());
+        networkScanManager.startScan();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NetworkManager networkManager = NetworkManager.getInstance();
-        networkManager.unregister();
+        NetworkScanManager networkScanManager = NetworkScanManager.getInstance();
+        networkScanManager.unregister();
     }
 
     @Override

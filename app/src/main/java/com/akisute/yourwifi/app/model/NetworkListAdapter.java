@@ -45,7 +45,7 @@ public class NetworkListAdapter extends ArrayAdapter<Network> {
     }
 
     @Subscribe
-    public void onScanResultUpdateEvent(NetworkManager.OnScanResultsUpdateEvent event) {
+    public void onScanResultUpdateEvent(NetworkScanManager.OnNewScanResultsEvent event) {
         // TODO: Needs to consider about Network list update policy. Time and Location are the vital keys.
         List<Network> networkList = event.getNetworkList();
         Collections.sort(networkList, new Comparator<Network>() {

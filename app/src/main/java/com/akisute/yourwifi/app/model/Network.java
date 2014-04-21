@@ -3,6 +3,7 @@ package com.akisute.yourwifi.app.model;
 import android.net.wifi.ScanResult;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,6 +94,7 @@ public class Network {
 
     private int mCryptoType; // enum value
     private String mDescription;
+    private Date mUpdatedAt;
 
     public static Network newInstance(ScanResult scanResult) {
         Network network = new Network();
@@ -135,6 +137,10 @@ public class Network {
         return mLevel;
     }
 
+    public long getTimestamp() {
+        return mTimestamp;
+    }
+
     public int getNetworkType() {
         return mNetworkType;
     }
@@ -154,6 +160,17 @@ public class Network {
 
     public String getDescription() {
         return mDescription;
+    }
+
+    public Date getUpdatedAt() {
+        return mUpdatedAt;
+    }
+
+    public void update(Network network) {
+        if (network == null) {
+            return;
+        }
+        update(network.getBssid(), network.getSsid(), network.getFrequency(), network.getCapabilities(), network.getLevel(), network.getTimestamp(), network.getNetworkType());
     }
 
     public void update(ScanResult scanResult) {
@@ -246,6 +263,8 @@ public class Network {
                 .append(" - ")
                 .append(shortCapabilitiesString);
         mDescription = descriptionBuilder.toString();
+
+        mUpdatedAt = new Date();
     }
 
     private boolean validate() {
