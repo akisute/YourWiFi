@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class NetworkScanManager {
 
+    private final ScanResultsAvailableReceiver mScanResultsAvailableReceiver;
     private Context mContext;
-    private ScanResultsAvailableReceiver mScanResultsAvailableReceiver;
     private boolean mScanning;
     private WifiManager.WifiLock mWifiLock;
 

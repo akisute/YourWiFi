@@ -13,14 +13,14 @@ import com.akisute.yourwifi.app.model.NetworkListAdapter;
 
 public class NetworkListFragment extends Fragment {
 
-    private NetworkListAdapter mAdapter;
-    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+    private final DataSetObserver mDataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
             getActivity().setTitle(String.format("%s (%d Networks)", getResources().getString(R.string.app_name), mAdapter.getCount()));
         }
     };
+    private NetworkListAdapter mAdapter;
 
     public NetworkListFragment() {
     }

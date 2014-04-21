@@ -21,7 +21,7 @@ public class NetworkCache {
 
     private static final long CACHE_EXPIRE_MILLIS = 30 * 1000;
 
-    private Map<String, Network> mNetworks = new HashMap<String, Network>(); // Key is BssId
+    private final Map<String, Network> mNetworks = new HashMap<String, Network>(); // Key is BssId
 
     public int size() {
         return mNetworks.size();

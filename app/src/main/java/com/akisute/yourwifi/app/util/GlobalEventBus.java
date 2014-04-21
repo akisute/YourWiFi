@@ -9,7 +9,7 @@ public final class GlobalEventBus extends Bus {
 
     private static final GlobalEventBus INSTANCE = new GlobalEventBus();
 
-    private Handler mMainThreadHandler;
+    private final Handler mMainThreadHandler;
 
     private GlobalEventBus() {
         super();
