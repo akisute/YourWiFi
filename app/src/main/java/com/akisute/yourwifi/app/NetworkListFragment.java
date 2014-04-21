@@ -2,6 +2,7 @@ package com.akisute.yourwifi.app;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +10,17 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.akisute.yourwifi.app.model.NetworkListAdapter;
-import com.akisute.yourwifi.app.util.GlobalEventBus;
 
 public class NetworkListFragment extends Fragment {
 
     private NetworkListAdapter mAdapter;
+    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            getActivity().setTitle(String.format("%s (%d Networks)", getResources().getString(R.string.app_name), mAdapter.getCount()));
+        }
+    };
 
     public NetworkListFragment() {
     }
@@ -22,13 +29,15 @@ public class NetworkListFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mAdapter = new NetworkListAdapter(activity);
-        GlobalEventBus.getInstance().register(mAdapter);
+        mAdapter.registerToEventBus();
+        mAdapter.registerDataSetObserver(mDataSetObserver);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        GlobalEventBus.getInstance().unregister(mAdapter);
+        mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        mAdapter.unregisterFromEventBus();
         mAdapter = null;
     }
 
