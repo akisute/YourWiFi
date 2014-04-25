@@ -1,0 +1,8 @@
+<resources>
+
+    <color name="font_crypto_none">#FFFF0000</color>
+    <color name="font_crypto_wep">#FFFFFF00</color>
+    <color name="font_crypto_wpa">#FF00CC00</color>
+    <color name="font_crypto_wpa2">#FF00CC00</color>
+
+</resources>
