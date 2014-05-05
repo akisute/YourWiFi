@@ -39,7 +39,6 @@ public class NetworkListAdapter extends BaseAdapter {
         for (Network network : networkList) {
             mNetworkCache.put(network);
         }
-        mNetworkCache.purgeOutdatedNetworks();
         mCurrentList = mNetworkCache.getAllNetworkList();
         notifyDataSetChanged();
     }

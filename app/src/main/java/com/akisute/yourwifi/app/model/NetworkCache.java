@@ -1,47 +1,37 @@
 package com.akisute.yourwifi.app.model;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Ordering;
+
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkCache {
 
-    private static final long CACHE_EXPIRE_MILLIS = 30 * 1000;
-
-    private final Map<String, Network> mNetworks = new HashMap<String, Network>(); // Key is BssId
+    // Key = BssId
+    private final Cache<String, Network> mNetworks = CacheBuilder.newBuilder()
+            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .build();
 
     public int size() {
-        return mNetworks.size();
+        return (int) mNetworks.size();
     }
 
     public void put(Network network) {
-        Network currentNetwork = mNetworks.get(network.getBssid());
-        if (currentNetwork != null) {
-            currentNetwork.update(network);
-        } else {
+        if (network != null) {
             mNetworks.put(network.getBssid(), network);
         }
     }
 
     public void clear() {
-        mNetworks.clear();
-    }
-
-    public void purgeOutdatedNetworks() {
-        Date currentDate = new Date();
-        Iterator<Network> networkIterator = mNetworks.values().iterator();
-        while (networkIterator.hasNext()) {
-            Network network = networkIterator.next();
-            Date expireDate = new Date(network.getUpdatedAt().getTime() + CACHE_EXPIRE_MILLIS);
-            if (currentDate.after(expireDate)) {
-                networkIterator.remove();
-            }
-        }
+        mNetworks.invalidateAll();
     }
 
     public List<Network> getAllNetworkList() {
@@ -49,10 +39,6 @@ public class NetworkCache {
     }
 
     public List<Network> getAllNetworkList(Comparator<Network> comparator) {
-        Network[] array = new Network[mNetworks.size()];
-        array = mNetworks.values().toArray(array);
-        List<Network> networkList = Arrays.asList(array);
-        Collections.sort(networkList, comparator);
-        return networkList;
+        return Ordering.from(comparator).sortedCopy(mNetworks.asMap().values());
     }
 }
