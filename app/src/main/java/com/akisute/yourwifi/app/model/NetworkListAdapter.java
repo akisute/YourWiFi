@@ -1,12 +1,9 @@
 package com.akisute.yourwifi.app.model;
 
 import android.content.Context;
-import android.provider.Settings;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -14,8 +11,6 @@ import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class NetworkListAdapter extends BaseAdapter {
@@ -73,7 +68,7 @@ public class NetworkListAdapter extends BaseAdapter {
             viewHolder.textView = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder =  (ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         Network network = getItem(position);
