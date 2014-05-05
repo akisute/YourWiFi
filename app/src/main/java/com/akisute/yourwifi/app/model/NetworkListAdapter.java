@@ -13,10 +13,18 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class NetworkListAdapter extends BaseAdapter {
 
-    private class ViewHolder {
+    class ViewHolder {
+        @InjectView(android.R.id.text1)
         TextView textView;
+
+        ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 
     private final LayoutInflater mLayoutInflater;
@@ -63,8 +71,7 @@ public class NetworkListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = mLayoutInflater.inflate(android.R.layout.simple_list_item_1, null, false);
-            viewHolder = new ViewHolder();
-            viewHolder.textView = (TextView) convertView.findViewById(android.R.id.text1);
+            viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
