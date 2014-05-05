@@ -23,6 +23,7 @@ public class Network {
     // Channel special values
     public static final int CHANNEL_UNKNOWN = Integer.MIN_VALUE;
 
+    // Internal converter maps
     private static final Map<Integer, Integer> FREQUENCY_TO_CHANNEL;
     private static final Map<Integer, String> NETWORK_TO_NAME;
 
@@ -85,7 +86,7 @@ public class Network {
     }
 
     private String mBssid;
-    private String mSsid; // Could be null when Stealth Network
+    private String mSsid; // Could be null when Stealth Network (really? requires confirmation)
     private int mFrequency; // In MHz
     private String mCapabilities;
     private int mLevel; // Signal Level, in dBm

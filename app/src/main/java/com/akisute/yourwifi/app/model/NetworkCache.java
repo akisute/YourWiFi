@@ -1,7 +1,5 @@
 package com.akisute.yourwifi.app.model;
 
-import com.google.common.collect.Ordering;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class NetworkCache {
-
-    public static final Comparator<Network> COMPARATOR_UPDATED_AT_ASC = new UpdatedAtComparator();
-    public static final Comparator<Network> COMPARATOR_UPDATED_AT_DESC = Ordering.from(new UpdatedAtComparator()).reverse();
-    public static final Comparator<Network> COMPARATOR_DEFAULT = Ordering.from(new SsidComparator()).compound(new FrequencyComparator());
 
     private static final long CACHE_EXPIRE_MILLIS = 30 * 1000;
 
@@ -51,7 +45,7 @@ public class NetworkCache {
     }
 
     public List<Network> getAllNetworkList() {
-        return getAllNetworkList(COMPARATOR_DEFAULT);
+        return getAllNetworkList(NetworkComparators.DEFAULT);
     }
 
     public List<Network> getAllNetworkList(Comparator<Network> comparator) {
@@ -60,41 +54,5 @@ public class NetworkCache {
         List<Network> networkList = Arrays.asList(array);
         Collections.sort(networkList, comparator);
         return networkList;
-    }
-
-    public static class UpdatedAtComparator implements Comparator<Network> {
-        @Override
-        public int compare(Network network, Network network2) {
-            return network.getUpdatedAt().compareTo(network2.getUpdatedAt());
-        }
-    }
-
-    public static class BssidComparator implements Comparator<Network> {
-        @Override
-        public int compare(Network network, Network network2) {
-            String bssid1 = network.getBssid();
-            String bssid2 = network2.getBssid();
-            return bssid1.compareTo(bssid2);
-        }
-    }
-
-    public static class SsidComparator implements Comparator<Network> {
-        @Override
-        public int compare(Network network, Network network2) {
-            String ssid1 = network.getSsid();
-            String ssid2 = network2.getSsid();
-            ssid1 = (ssid1 == null) ? "" : ssid1;
-            ssid2 = (ssid2 == null) ? "" : ssid2;
-            return ssid1.compareTo(ssid2);
-        }
-    }
-
-    public static class FrequencyComparator implements Comparator<Network> {
-        @Override
-        public int compare(Network network, Network network2) {
-            int frequency1 = network.getFrequency();
-            int frequency2 = network2.getFrequency();
-            return Integer.compare(frequency1, frequency2);
-        }
     }
 }
