@@ -8,6 +8,7 @@ import com.google.common.collect.Ordering;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,6 +30,11 @@ public class Essid {
     private Essid() {
     }
 
+    @Override
+    public int hashCode() {
+        return getSsid().hashCode();
+    }
+
     public String getSsid() {
         Network network = mNetworkSet.iterator().next();
         return network.getSsid();
@@ -40,6 +46,10 @@ public class Essid {
 
     public int getCryptoType() {
         return Ordering.from(NetworkComparators.CRYPTOTYPE_WEAKEST_TO_STRONGEST).min(mNetworkSet).getCryptoType();
+    }
+
+    public Date getUpdatedAt() {
+        return Ordering.from(NetworkComparators.UPDATED_AT_ASC).min(mNetworkSet).getUpdatedAt();
     }
 
     public void update(Collection<Network> networkList) {

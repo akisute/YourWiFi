@@ -118,6 +118,11 @@ public class Network {
     private Network() {
     }
 
+    @Override
+    public int hashCode() {
+        return mBssid.hashCode();
+    }
+
     public String getBssid() {
         return mBssid;
     }
