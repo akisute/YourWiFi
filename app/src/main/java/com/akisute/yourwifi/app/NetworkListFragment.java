@@ -17,7 +17,8 @@ public class NetworkListFragment extends Fragment {
         @Override
         public void onChanged() {
             super.onChanged();
-            getActivity().setTitle(String.format("%s (%d Networks)", getResources().getString(R.string.app_name), mAdapter.getCount()));
+            String appName = getResources().getString(R.string.app_name);
+            getActivity().setTitle(getResources().getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
         }
     };
     private NetworkListAdapter mAdapter;

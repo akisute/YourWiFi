@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.akisute.yourwifi.app.R;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.squareup.otto.Subscribe;
 
@@ -16,11 +17,16 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NetworkListAdapter extends BaseAdapter {
+public class EssidListAdapter extends BaseAdapter {
 
     class ViewHolder {
-        @InjectView(android.R.id.text1)
-        TextView textView;
+
+        @InjectView(R.id.ssid)
+        TextView ssid;
+        @InjectView(R.id.crypto)
+        TextView crypto;
+        @InjectView(R.id.description)
+        TextView description;
 
         ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -28,9 +34,9 @@ public class NetworkListAdapter extends BaseAdapter {
     }
 
     private final LayoutInflater mLayoutInflater;
-    private final List<Network> mNetworkList = new ArrayList<Network>();
+    private final List<Essid> mEssidList = new ArrayList<Essid>();
 
-    public NetworkListAdapter(Context context) {
+    public EssidListAdapter(Context context) {
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -44,19 +50,19 @@ public class NetworkListAdapter extends BaseAdapter {
 
     public void update(List<Network> networkList) {
         NetworkCache networkCache = NetworkCache.getInstance();
-        mNetworkList.clear();
-        mNetworkList.addAll(networkCache.getAllNetworkList());
+        mEssidList.clear();
+        mEssidList.addAll(networkCache.getAllEssidList());
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return mNetworkList.size();
+        return mEssidList.size();
     }
 
     @Override
-    public Network getItem(int position) {
-        return mNetworkList.get(position);
+    public Essid getItem(int position) {
+        return mEssidList.get(position);
     }
 
     @Override
@@ -68,15 +74,17 @@ public class NetworkListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(android.R.layout.simple_list_item_1, null, false);
+            convertView = mLayoutInflater.inflate(R.layout.list_essid_item, null, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Network network = getItem(position);
-        viewHolder.textView.setText(network.getDescription());
+        Essid essid = getItem(position);
+        viewHolder.ssid.setText(essid.getSsid());
+        viewHolder.crypto.setText(String.valueOf(essid.getCryptoType()));
+        viewHolder.description.setText(convertView.getResources().getQuantityString(R.plurals.list_network_item_description, essid.getCount(), essid.getCount()));
 
         return convertView;
     }

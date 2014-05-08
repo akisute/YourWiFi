@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.NetworkListAdapter;
 
 public class EssidListFragment extends Fragment {
@@ -17,12 +18,12 @@ public class EssidListFragment extends Fragment {
         @Override
         public void onChanged() {
             super.onChanged();
-            getActivity().setTitle(String.format("%s (%d Networks)", getResources().getString(R.string.app_name), mAdapter.getCount()));
+            String appName = getResources().getString(R.string.app_name);
+            getActivity().setTitle(getResources().getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
         }
     };
 
-    // TODO: new adapter required
-    private NetworkListAdapter mAdapter;
+    private EssidListAdapter mAdapter;
 
     public EssidListFragment() {
     }
@@ -30,7 +31,7 @@ public class EssidListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mAdapter = new NetworkListAdapter(activity);
+        mAdapter = new EssidListAdapter(activity);
         mAdapter.registerToEventBus();
         mAdapter.registerDataSetObserver(mDataSetObserver);
     }

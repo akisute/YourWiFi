@@ -4,23 +4,26 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.collect.Ordering;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkCache {
+
+    private static final NetworkCache INSTANCE = new NetworkCache();
+
+    public static final NetworkCache getInstance() {
+        return INSTANCE;
+    }
+
+    private NetworkCache() {
+    }
 
     // Key = BssId
     private final Cache<String, Network> mNetworks = CacheBuilder.newBuilder()
@@ -54,7 +57,7 @@ public class NetworkCache {
     }
 
     public List<Essid> getAllEssidList(Comparator<Essid> comparator) {
-        Multimap<String, Network> multimap = HashMultimap.create(size(), size()/2);
+        Multimap<String, Network> multimap = HashMultimap.create(size(), size() / 2);
         for (Network network : mNetworks.asMap().values()) {
             multimap.put(network.getSsid(), network);
         }

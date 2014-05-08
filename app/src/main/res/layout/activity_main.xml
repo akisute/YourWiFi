@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.akisute.yourwifi.app.NetworkListFragment"
+        android:name="com.akisute.yourwifi.app.EssidListFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_network_list" />
+        tools:layout="@layout/fragment_essid_list" />
 </FrameLayout>

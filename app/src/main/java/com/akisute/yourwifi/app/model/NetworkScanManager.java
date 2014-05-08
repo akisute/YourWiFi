@@ -105,12 +105,14 @@ public class NetworkScanManager {
                 return;
             }
 
+            NetworkCache networkCache = NetworkCache.getInstance();
             List<Network> networkList = new ArrayList<Network>(scanResultList.size());
             for (ScanResult scanResult : scanResultList) {
                 Network network = Network.newInstance(scanResult);
                 if (network == null) {
                     continue;
                 }
+                networkCache.put(network);
                 networkList.add(network);
             }
             GlobalEventBus.getInstance().postInMainThread(new OnNewScanResultsEvent(networkList));
