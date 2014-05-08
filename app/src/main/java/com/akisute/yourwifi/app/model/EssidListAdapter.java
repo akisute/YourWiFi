@@ -1,5 +1,6 @@
 package com.akisute.yourwifi.app.model;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ public class EssidListAdapter extends BaseAdapter {
     @Inject
     LayoutInflater mLayoutInflater;
     @Inject
+    Resources mResources;
+    @Inject
     GlobalEventBus mGlobalEventBus;
     @Inject
     NetworkCache mNetworkCache;
@@ -44,8 +47,9 @@ public class EssidListAdapter extends BaseAdapter {
     private final List<Essid> mEssidList = new ArrayList<Essid>();
 
     @Inject
-    public EssidListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+    public EssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         mLayoutInflater = layoutInflater;
+        mResources = resources;
         mGlobalEventBus = globalEventBus;
         mNetworkCache = networkCache;
     }
@@ -58,7 +62,7 @@ public class EssidListAdapter extends BaseAdapter {
         mGlobalEventBus.unregister(this);
     }
 
-    public void update(List<Network> networkList) {
+    public void update() {
         mEssidList.clear();
         mEssidList.addAll(mNetworkCache.getAllEssidList());
         notifyDataSetChanged();
@@ -93,13 +97,13 @@ public class EssidListAdapter extends BaseAdapter {
         Essid essid = getItem(position);
         viewHolder.ssid.setText(essid.getSsid());
         viewHolder.crypto.setText(String.valueOf(essid.getCryptoType()));
-        viewHolder.description.setText(convertView.getResources().getQuantityString(R.plurals.list_network_item_description, essid.getCount(), essid.getCount()));
+        viewHolder.description.setText(mResources.getQuantityString(R.plurals.list_network_item_description, essid.getCount(), essid.getCount()));
 
         return convertView;
     }
 
     @Subscribe
     public void onNewScanResultsEvent(NetworkScanManager.OnNewScanResultsEvent event) {
-        update(event.getNetworkList());
+        update();
     }
 }

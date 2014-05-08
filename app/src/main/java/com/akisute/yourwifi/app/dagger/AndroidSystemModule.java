@@ -1,6 +1,7 @@
 package com.akisute.yourwifi.app.dagger;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
@@ -23,6 +24,12 @@ public class AndroidSystemModule {
 
     @Provides
     @Singleton
+    Resources provideResources(@ForApplication Context context) {
+        return context.getResources();
+    }
+
+    @Provides
+    @Singleton
     WifiManager provideWifiManager(@ForApplication Context context) {
         return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
@@ -31,4 +38,5 @@ public class AndroidSystemModule {
     LayoutInflater provideLayoutInflater(@ForInjecting Context context) {
         return (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
 }

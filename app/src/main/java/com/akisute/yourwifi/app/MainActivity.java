@@ -1,5 +1,7 @@
 package com.akisute.yourwifi.app;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,10 +17,13 @@ public class MainActivity extends DaggeredActivity {
     @Inject
     NetworkScanManager mNetworkScanManager;
 
+    private Fragment mCurrentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showEssidFragment();
         mNetworkScanManager.startScan();
     }
 
@@ -29,6 +34,23 @@ public class MainActivity extends DaggeredActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem menuActionShowBssids = menu.findItem(R.id.action_show_bssids);
+        MenuItem menuActionShowEssids = menu.findItem(R.id.action_show_essids);
+
+        if (mCurrentFragment instanceof NetworkListFragment) {
+            menuActionShowBssids.setVisible(false);
+            menuActionShowEssids.setVisible(true);
+        } else if (mCurrentFragment instanceof EssidListFragment) {
+            menuActionShowBssids.setVisible(true);
+            menuActionShowEssids.setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -36,10 +58,32 @@ public class MainActivity extends DaggeredActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_show_bssids:
+                showBssidFragment();
+                return true;
+            case R.id.action_show_essids:
+                showEssidFragment();
+                return true;
+            case R.id.action_settings:
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showBssidFragment() {
+        NetworkListFragment fragment = new NetworkListFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment, fragment);
+        transaction.commit();
+        mCurrentFragment = fragment;
+    }
+
+    private void showEssidFragment() {
+        EssidListFragment fragment = new EssidListFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment, fragment);
+        transaction.commit();
+        mCurrentFragment = fragment;
     }
 }

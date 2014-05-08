@@ -52,7 +52,7 @@ public class NetworkListAdapter extends BaseAdapter {
         mGlobalEventBus.unregister(this);
     }
 
-    public void update(List<Network> networkList) {
+    public void update() {
         mNetworkList.clear();
         mNetworkList.addAll(mNetworkCache.getAllNetworkList());
         notifyDataSetChanged();
@@ -92,6 +92,6 @@ public class NetworkListAdapter extends BaseAdapter {
 
     @Subscribe
     public void onNewScanResultsEvent(NetworkScanManager.OnNewScanResultsEvent event) {
-        update(event.getNetworkList());
+        update();
     }
 }

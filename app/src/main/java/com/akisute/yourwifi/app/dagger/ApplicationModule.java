@@ -1,12 +1,12 @@
 package com.akisute.yourwifi.app.dagger;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
 import com.akisute.android.daggered.DaggeredApplicationModule;
 import com.akisute.android.daggered.ForApplication;
-import com.akisute.android.daggered.ForInjecting;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
 import com.akisute.yourwifi.app.NetworkListFragment;
@@ -58,8 +58,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
-        return new EssidListAdapter(layoutInflater, globalEventBus, networkCache);
+    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        return new EssidListAdapter(layoutInflater, resources, globalEventBus, networkCache);
     }
 
 }

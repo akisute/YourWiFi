@@ -1,6 +1,7 @@
 package com.akisute.yourwifi.app;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,11 +23,13 @@ public class NetworkListFragment extends DaggeredFragment {
         @Override
         public void onChanged() {
             super.onChanged();
-            String appName = getResources().getString(R.string.app_name);
-            getActivity().setTitle(getResources().getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
+            String appName = mResources.getString(R.string.app_name);
+            getActivity().setTitle(mResources.getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
         }
     };
 
+    @Inject
+    Resources mResources;
     @Inject
     NetworkListAdapter mAdapter;
     @InjectView(android.R.id.list)
@@ -59,6 +62,7 @@ public class NetworkListFragment extends DaggeredFragment {
         View view = inflater.inflate(R.layout.fragment_network_list, container, false);
         ButterKnife.inject(this, view);
         mListView.setAdapter(mAdapter);
+        mAdapter.update();
         return view;
     }
 }
