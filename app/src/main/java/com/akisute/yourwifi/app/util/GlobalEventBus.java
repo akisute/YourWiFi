@@ -7,17 +7,10 @@ import com.squareup.otto.Bus;
 
 public final class GlobalEventBus extends Bus {
 
-    private static final GlobalEventBus INSTANCE = new GlobalEventBus();
-
     private final Handler mMainThreadHandler;
 
-    private GlobalEventBus() {
-        super();
+    public GlobalEventBus() {
         mMainThreadHandler = new Handler(Looper.getMainLooper());
-    }
-
-    public static GlobalEventBus getInstance() {
-        return INSTANCE;
     }
 
     public void postInMainThread(final Object event) {

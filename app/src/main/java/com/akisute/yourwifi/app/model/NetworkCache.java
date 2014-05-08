@@ -16,15 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 public class NetworkCache {
 
-    private static final NetworkCache INSTANCE = new NetworkCache();
-
-    public static final NetworkCache getInstance() {
-        return INSTANCE;
-    }
-
-    private NetworkCache() {
-    }
-
     // Key = BssId
     private final Cache<String, Network> mNetworks = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.SECONDS)

@@ -1,6 +1,5 @@
 package com.akisute.yourwifi.app.model;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,25 +28,33 @@ public class NetworkListAdapter extends BaseAdapter {
         }
     }
 
-    private final LayoutInflater mLayoutInflater;
+    @Inject
+    LayoutInflater mLayoutInflater;
+    @Inject
+    GlobalEventBus mGlobalEventBus;
+    @Inject
+    NetworkCache mNetworkCache;
+
     private final List<Network> mNetworkList = new ArrayList<Network>();
 
-    public NetworkListAdapter(Context context) {
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    @Inject
+    public NetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        mLayoutInflater = layoutInflater;
+        mGlobalEventBus = globalEventBus;
+        mNetworkCache = networkCache;
     }
 
     public void registerToEventBus() {
-        GlobalEventBus.getInstance().register(this);
+        mGlobalEventBus.register(this);
     }
 
     public void unregisterFromEventBus() {
-        GlobalEventBus.getInstance().unregister(this);
+        mGlobalEventBus.unregister(this);
     }
 
     public void update(List<Network> networkList) {
-        NetworkCache networkCache = NetworkCache.getInstance();
         mNetworkList.clear();
-        mNetworkList.addAll(networkCache.getAllNetworkList());
+        mNetworkList.addAll(mNetworkCache.getAllNetworkList());
         notifyDataSetChanged();
     }
 

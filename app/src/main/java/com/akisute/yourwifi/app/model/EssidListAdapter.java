@@ -1,6 +1,5 @@
 package com.akisute.yourwifi.app.model;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,25 +34,33 @@ public class EssidListAdapter extends BaseAdapter {
         }
     }
 
-    private final LayoutInflater mLayoutInflater;
+    @Inject
+    LayoutInflater mLayoutInflater;
+    @Inject
+    GlobalEventBus mGlobalEventBus;
+    @Inject
+    NetworkCache mNetworkCache;
+
     private final List<Essid> mEssidList = new ArrayList<Essid>();
 
-    public EssidListAdapter(Context context) {
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    @Inject
+    public EssidListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        mLayoutInflater = layoutInflater;
+        mGlobalEventBus = globalEventBus;
+        mNetworkCache = networkCache;
     }
 
     public void registerToEventBus() {
-        GlobalEventBus.getInstance().register(this);
+        mGlobalEventBus.register(this);
     }
 
     public void unregisterFromEventBus() {
-        GlobalEventBus.getInstance().unregister(this);
+        mGlobalEventBus.unregister(this);
     }
 
     public void update(List<Network> networkList) {
-        NetworkCache networkCache = NetworkCache.getInstance();
         mEssidList.clear();
-        mEssidList.addAll(networkCache.getAllEssidList());
+        mEssidList.addAll(mNetworkCache.getAllEssidList());
         notifyDataSetChanged();
     }
 
