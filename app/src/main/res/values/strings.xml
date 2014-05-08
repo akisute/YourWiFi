@@ -2,6 +2,11 @@
 <resources>
 
     <string name="app_name">YourWiFi</string>
+    <string name="network_unknown">Unknown</string>
+    <string name="network_wifi">WiFi</string>
+    <string name="network_cellular">Cellular</string>
+    <string name="network_cellular_gsm">GSM</string>
+    <string name="network_cellular_cdma">CDMA</string>
     <string name="crypto_none">Open</string>
     <string name="crypto_wep">WEP</string>
     <string name="crypto_wpa">WPA</string>

@@ -15,6 +15,7 @@ import com.akisute.yourwifi.app.model.NetworkCache;
 import com.akisute.yourwifi.app.model.NetworkListAdapter;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.akisute.yourwifi.app.util.GlobalResources;
 
 import javax.inject.Singleton;
 
@@ -42,6 +43,12 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
+    GlobalResources provideGlobalResources(Resources resources) {
+        return new GlobalResources(resources);
+    }
+
+    @Provides
+    @Singleton
     NetworkCache providesNetworkCache() {
         return new NetworkCache();
     }
@@ -58,8 +65,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
-        return new EssidListAdapter(layoutInflater, resources, globalEventBus, networkCache);
+    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        return new EssidListAdapter(layoutInflater, resources, globalResources, globalEventBus, networkCache);
     }
 
 }

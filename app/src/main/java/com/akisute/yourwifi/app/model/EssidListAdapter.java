@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.akisute.yourwifi.app.R;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.akisute.yourwifi.app.util.GlobalResources;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ public class EssidListAdapter extends BaseAdapter {
     @Inject
     Resources mResources;
     @Inject
+    GlobalResources mGlobalResources;
+    @Inject
     GlobalEventBus mGlobalEventBus;
     @Inject
     NetworkCache mNetworkCache;
@@ -47,9 +50,10 @@ public class EssidListAdapter extends BaseAdapter {
     private final List<Essid> mEssidList = new ArrayList<Essid>();
 
     @Inject
-    public EssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+    public EssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         mLayoutInflater = layoutInflater;
         mResources = resources;
+        mGlobalResources = globalResources;
         mGlobalEventBus = globalEventBus;
         mNetworkCache = networkCache;
     }
@@ -96,7 +100,8 @@ public class EssidListAdapter extends BaseAdapter {
 
         Essid essid = getItem(position);
         viewHolder.ssid.setText(essid.getSsid());
-        viewHolder.crypto.setText(String.valueOf(essid.getCryptoType()));
+        viewHolder.crypto.setText(mGlobalResources.getCryptoTypeName(essid.getCryptoType()));
+        viewHolder.crypto.setTextColor(mGlobalResources.getCryptoTypeFontColor(essid.getCryptoType()));
         viewHolder.description.setText(mResources.getQuantityString(R.plurals.list_network_item_description, essid.getCount(), essid.getCount()));
 
         return convertView;

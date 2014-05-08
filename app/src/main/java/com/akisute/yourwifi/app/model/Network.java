@@ -75,6 +75,7 @@ public class Network {
             FREQUENCY_TO_CHANNEL = Collections.unmodifiableMap(buffer);
         }
         {
+            // Only used for description for debugging purpose. Not localized.
             Map<Integer, String> buffer = new HashMap<Integer, String>();
             buffer.put(NETWORK_UNKNOWN, "Unknown");
             buffer.put(NETWORK_WIFI, "WiFi");
@@ -211,8 +212,7 @@ public class Network {
         mCryptoType = CRYPTO_NONE;
         if (mCapabilities.contains("[WPA2")) {
             mCryptoType = CRYPTO_WPA2;
-        }
-        if (mCapabilities.contains("[WPA")) {
+        } else if (mCapabilities.contains("[WPA")) {
             mCryptoType = CRYPTO_WPA;
         }
         if (mCapabilities.contains("[WEP")) {
