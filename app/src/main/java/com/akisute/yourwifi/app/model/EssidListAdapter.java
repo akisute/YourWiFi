@@ -102,7 +102,7 @@ public class EssidListAdapter extends BaseAdapter {
         viewHolder.ssid.setText(essid.getSsid());
         viewHolder.crypto.setText(mGlobalResources.getCryptoTypeName(essid.getCryptoType()));
         viewHolder.crypto.setTextColor(mGlobalResources.getCryptoTypeFontColor(essid.getCryptoType()));
-        viewHolder.description.setText(mResources.getQuantityString(R.plurals.list_network_item_description, essid.getCount(), essid.getCount()));
+        viewHolder.description.setText(mResources.getQuantityString(R.plurals.list_essid_item_description, essid.getCount(), essid.getCount()));
 
         return convertView;
     }

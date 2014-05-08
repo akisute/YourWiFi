@@ -2,18 +2,23 @@ package com.akisute.yourwifi.app;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.akisute.android.daggered.DaggeredActivity;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
+import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 
 public class MainActivity extends DaggeredActivity {
 
+    @Inject
+    GlobalEventBus mGlobalEventBus;
     @Inject
     NetworkScanManager mNetworkScanManager;
 
@@ -24,12 +29,14 @@ public class MainActivity extends DaggeredActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         showEssidFragment();
+        mGlobalEventBus.register(this);
         mNetworkScanManager.startScan();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mGlobalEventBus.unregister(this);
         mNetworkScanManager.stopScan();
     }
 
@@ -69,6 +76,12 @@ public class MainActivity extends DaggeredActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onEssidSelectedEvent(EssidListFragment.OnEssidSelectedEvent event) {
+        Intent intent = new Intent(this, EssidDetailActivity.class);
+        startActivity(intent);
     }
 
     private void showBssidFragment() {

@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/list_network_item_description"
+        android:text="@string/list_essid_item_description"
         android:id="@+id/description"
         android:layout_alignParentTop="false"
         android:layout_alignStart="@+id/ssid"

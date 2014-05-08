@@ -18,15 +18,20 @@
 
     <string name="activity_main_title">%1$s (%2$d Networks)</string>
     <plurals name="activity_main_title">
-        <!-- plurals doesn't behave well on several languages (like Portuguese, Russians, etc...) so base language settings should only contain "other" quantity  -->
-        <!-- Add other quantity settings in specific languages settings  -->
+
+        <!-- plurals doesn't behave well on several languages (like Portuguese, Russians, etc...) so base language settings should only contain "other" quantity -->
+        <!-- Add other quantity settings in specific languages settings -->
         <!-- https://code.google.com/p/android/issues/detail?id=8287 -->
         <item quantity="other">%1$s (%2$d Networks)</item>
     </plurals>
 
-    <string name="list_network_item_description">%1$d BSSIDs</string>
-    <plurals name="list_network_item_description">
+    <string name="list_essid_item_description">%1$d BSSIDs</string>
+    <plurals name="list_essid_item_description">
         <item quantity="other">%1$d BSSIDs</item>
     </plurals>
+
+    <string name="list_network_item_level">%1$d dBm</string>
+    <string name="list_network_item_frequency">%1$dMHz</string>
+    <string name="list_network_item_frequency_channel">%1$dMHz (Channel %2$d)</string>
 
 </resources>

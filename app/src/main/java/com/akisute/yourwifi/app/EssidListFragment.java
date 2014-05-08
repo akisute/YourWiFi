@@ -7,10 +7,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.akisute.android.daggered.DaggeredFragment;
+import com.akisute.yourwifi.app.model.Essid;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
+import com.akisute.yourwifi.app.model.Network;
+import com.akisute.yourwifi.app.util.GlobalEventBus;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,6 +36,8 @@ public class EssidListFragment extends DaggeredFragment {
 
     @Inject
     Resources mResources;
+    @Inject
+    GlobalEventBus mGlobalEventBus;
     @Inject
     EssidListAdapter mAdapter;
     @InjectView(android.R.id.list)
@@ -62,7 +70,27 @@ public class EssidListFragment extends DaggeredFragment {
         View view = inflater.inflate(R.layout.fragment_essid_list, container, false);
         ButterKnife.inject(this, view);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Essid essid = mAdapter.getItem(position);
+                mGlobalEventBus.postInMainThread(new OnEssidSelectedEvent(essid));
+            }
+        });
         mAdapter.update();
         return view;
+    }
+
+    public static class OnEssidSelectedEvent {
+
+        private final Essid mEssid;
+
+        public OnEssidSelectedEvent(Essid essid) {
+            mEssid = essid;
+        }
+
+        public Essid getEssid() {
+            return mEssid;
+        }
     }
 }

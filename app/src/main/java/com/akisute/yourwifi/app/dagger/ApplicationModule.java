@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 
 import com.akisute.android.daggered.DaggeredApplicationModule;
 import com.akisute.android.daggered.ForApplication;
+import com.akisute.yourwifi.app.EssidDetailActivity;
+import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
 import com.akisute.yourwifi.app.NetworkListFragment;
@@ -29,8 +31,10 @@ import dagger.Provides;
         },
         injects = {
                 MainActivity.class,
+                EssidDetailActivity.class,
                 NetworkListFragment.class,
-                EssidListFragment.class
+                EssidListFragment.class,
+                EssidDetailFragment.class
         }
 )
 public class ApplicationModule {
