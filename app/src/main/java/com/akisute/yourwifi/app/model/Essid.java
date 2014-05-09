@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +41,16 @@ public class Essid {
         return network.getSsid();
     }
 
+    public Set<Network> getNetworkSet() {
+        return Sets.newHashSet(mNetworkSet);
+    }
+
     public int getCount() {
         return mNetworkSet.size();
+    }
+
+    public int getLevel() {
+        return Ordering.from(NetworkComparators.LEVEL_DESC).min(mNetworkSet).getLevel();
     }
 
     public int getCryptoType() {

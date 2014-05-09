@@ -1,6 +1,5 @@
 package com.akisute.yourwifi.app.model;
 
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,8 @@ public class EssidListAdapter extends BaseAdapter {
         TextView crypto;
         @InjectView(R.id.description)
         TextView description;
+        @InjectView(R.id.level)
+        TextView level;
 
         ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -100,6 +101,7 @@ public class EssidListAdapter extends BaseAdapter {
         viewHolder.crypto.setText(mGlobalResources.getCryptoTypeName(essid.getCryptoType()));
         viewHolder.crypto.setTextColor(mGlobalResources.getCryptoTypeFontColor(essid.getCryptoType()));
         viewHolder.description.setText(mGlobalResources.getResources().getQuantityString(R.plurals.list_essid_item_description, essid.getCount(), essid.getCount()));
+        viewHolder.level.setText(mGlobalResources.getResources().getString(R.string.list_network_item_level, essid.getLevel()));
 
         return convertView;
     }

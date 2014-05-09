@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NetworkListAdapter extends BaseAdapter {
+public class RawNetworkListAdapter extends BaseAdapter {
 
     class ViewHolder {
         @InjectView(android.R.id.text1)
@@ -38,7 +38,7 @@ public class NetworkListAdapter extends BaseAdapter {
     private final List<Network> mNetworkList = new ArrayList<Network>();
 
     @Inject
-    public NetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+    public RawNetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         mLayoutInflater = layoutInflater;
         mGlobalEventBus = globalEventBus;
         mNetworkCache = networkCache;

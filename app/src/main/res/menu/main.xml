@@ -3,7 +3,7 @@
     tools:context="com.akisute.yourwifi.app.MainActivity" >
 
     <item android:id="@+id/action_show_bssids"
-        android:title="@string/action_show_bssids"
+        android:title="@string/action_show_raw_networks"
         android:orderInCategory="100"
         android:showAsAction="never" />
 

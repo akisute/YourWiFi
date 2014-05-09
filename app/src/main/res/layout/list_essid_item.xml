@@ -30,9 +30,18 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/ssid"
-            android:layout_below="@+id/ssid"
+            android:layout_alignStart="@id/ssid"
+            android:layout_below="@id/ssid"
             android:text="@string/list_essid_item_description"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/description"
+            android:text="@string/list_network_item_level"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>
 

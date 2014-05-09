@@ -11,11 +11,12 @@ import com.akisute.yourwifi.app.EssidDetailActivity;
 import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
-import com.akisute.yourwifi.app.NetworkListFragment;
+import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.NetworkRecordingService;
+import com.akisute.yourwifi.app.model.BssidListAdapter;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.NetworkCache;
-import com.akisute.yourwifi.app.model.NetworkListAdapter;
+import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.akisute.yourwifi.app.util.GlobalResources;
@@ -33,7 +34,7 @@ import dagger.Provides;
         injects = {
                 MainActivity.class,
                 EssidDetailActivity.class,
-                NetworkListFragment.class,
+                RawNetworkListFragment.class,
                 EssidListFragment.class,
                 EssidDetailFragment.class,
                 NetworkRecordingService.class
@@ -66,13 +67,18 @@ public class ApplicationModule {
     }
 
     @Provides
-    NetworkListAdapter providesNetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
-        return new NetworkListAdapter(layoutInflater, globalEventBus, networkCache);
+    RawNetworkListAdapter providesRawNetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        return new RawNetworkListAdapter(layoutInflater, globalEventBus, networkCache);
     }
 
     @Provides
     EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         return new EssidListAdapter(layoutInflater, globalResources, globalEventBus, networkCache);
+    }
+
+    @Provides
+    BssidListAdapter providesBssidListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources) {
+        return new BssidListAdapter(layoutInflater, globalResources);
     }
 
 }

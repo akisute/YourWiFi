@@ -1,7 +1,6 @@
 package com.akisute.yourwifi.app;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.akisute.android.daggered.DaggeredFragment;
-import com.akisute.yourwifi.app.model.NetworkListAdapter;
+import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.util.GlobalResources;
 
 import javax.inject.Inject;
@@ -18,7 +17,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NetworkListFragment extends DaggeredFragment {
+public class RawNetworkListFragment extends DaggeredFragment {
 
     private final DataSetObserver mDataSetObserver = new DataSetObserver() {
         @Override
@@ -32,11 +31,11 @@ public class NetworkListFragment extends DaggeredFragment {
     @Inject
     GlobalResources mGlobalResources;
     @Inject
-    NetworkListAdapter mAdapter;
+    RawNetworkListAdapter mAdapter;
     @InjectView(android.R.id.list)
     ListView mListView;
 
-    public NetworkListFragment() {
+    public RawNetworkListFragment() {
     }
 
     @Override
@@ -60,7 +59,7 @@ public class NetworkListFragment extends DaggeredFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_network_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_raw_network_list, container, false);
         ButterKnife.inject(this, view);
         mListView.setAdapter(mAdapter);
         mAdapter.update();

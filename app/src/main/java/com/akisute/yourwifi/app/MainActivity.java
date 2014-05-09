@@ -2,13 +2,11 @@ package com.akisute.yourwifi.app;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.akisute.android.daggered.DaggeredActivity;
-import com.akisute.yourwifi.app.model.NetworkScanManager;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.squareup.otto.Subscribe;
 
@@ -46,7 +44,7 @@ public class MainActivity extends DaggeredActivity {
         MenuItem menuActionShowBssids = menu.findItem(R.id.action_show_bssids);
         MenuItem menuActionShowEssids = menu.findItem(R.id.action_show_essids);
 
-        if (mCurrentFragment instanceof NetworkListFragment) {
+        if (mCurrentFragment instanceof RawNetworkListFragment) {
             menuActionShowBssids.setVisible(false);
             menuActionShowEssids.setVisible(true);
         } else if (mCurrentFragment instanceof EssidListFragment) {
@@ -66,7 +64,7 @@ public class MainActivity extends DaggeredActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_show_bssids:
-                showBssidFragment();
+                showRawNetworkFragment();
                 return true;
             case R.id.action_show_essids:
                 showEssidFragment();
@@ -82,8 +80,8 @@ public class MainActivity extends DaggeredActivity {
         EssidDetailActivity.startActivity(this, event.getEssid());
     }
 
-    private void showBssidFragment() {
-        NetworkListFragment fragment = new NetworkListFragment();
+    private void showRawNetworkFragment() {
+        RawNetworkListFragment fragment = new RawNetworkListFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, fragment);
         transaction.commit();

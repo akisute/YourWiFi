@@ -11,6 +11,9 @@ public class NetworkComparators {
     public static final Comparator<Network> UPDATED_AT_ASC = new UpdatedAtComparator();
     public static final Comparator<Network> UPDATED_AT_DESC = Ordering.from(new UpdatedAtComparator()).reverse();
 
+    public static final Comparator<Network> LEVEL_ASC = new LevelComparator();
+    public static final Comparator<Network> LEVEL_DESC = Ordering.from(new LevelComparator()).reverse();
+
     public static final Comparator<Network> CRYPTOTYPE_WEAKEST_TO_STRONGEST = new CryptoTypeStrengthComparator();
     public static final Comparator<Network> CRYPTOTYPE_STRONGEST_TO_WEAKEST = Ordering.from(new CryptoTypeStrengthComparator()).reverse();
 
@@ -48,6 +51,15 @@ public class NetworkComparators {
             int frequency1 = network.getFrequency();
             int frequency2 = network2.getFrequency();
             return Integer.compare(frequency1, frequency2);
+        }
+    }
+
+    public static class LevelComparator implements Comparator<Network> {
+        @Override
+        public int compare(Network network, Network network2) {
+            int level1 = network.getLevel();
+            int level2 = network2.getLevel();
+            return Integer.compare(level1, level2);
         }
     }
 
