@@ -6,8 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.akisute.android.daggered.DaggeredFragment;
+import com.akisute.yourwifi.app.model.Essid;
 
 public class EssidDetailFragment extends DaggeredFragment {
+
+    private Essid mEssid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -15,4 +18,11 @@ public class EssidDetailFragment extends DaggeredFragment {
         return view;
     }
 
+    public Essid getEssid() {
+        return mEssid;
+    }
+
+    public void setEssid(Essid essid) {
+        mEssid = essid;
+    }
 }

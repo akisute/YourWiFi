@@ -1,17 +1,24 @@
 package com.akisute.yourwifi.app;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.akisute.android.daggered.DaggeredService;
 import com.akisute.yourwifi.app.intent.Intents;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
+import com.akisute.yourwifi.app.util.GlobalResources;
 
 import javax.inject.Inject;
 
 public class NetworkRecordingService extends DaggeredService {
+
+    private static final int NOTIFICATION_ID = 1;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, NetworkRecordingService.class);
@@ -19,9 +26,15 @@ public class NetworkRecordingService extends DaggeredService {
         context.startService(intent);
     }
 
-    public static void stop(Context context) {
+    public static void stopImmediately(Context context) {
         Intent intent = new Intent(context, NetworkRecordingService.class);
         context.stopService(intent);
+    }
+
+    public static PendingIntent getStopPendingIntent(Context context) {
+        Intent intent = new Intent(context, NetworkRecordingService.class);
+        intent.setAction(Intents.ACTION_STOP);
+        return PendingIntent.getService(context, 0, intent, 0);
     }
 
     public class LocalBinder extends Binder {
@@ -32,6 +45,10 @@ public class NetworkRecordingService extends DaggeredService {
 
     private final LocalBinder mBinder = new LocalBinder();
 
+    @Inject
+    GlobalResources mGlobalResources;
+    @Inject
+    NotificationManager mNotificationManager;
     @Inject
     NetworkScanManager mNetworkScanManager;
 
@@ -66,10 +83,33 @@ public class NetworkRecordingService extends DaggeredService {
     }
 
     private void handleStart() {
+        setupNotification();
         mNetworkScanManager.startScan();
+        Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Started."));
     }
 
     private void handleStop() {
+        removeNotification();
         mNetworkScanManager.stopScan();
+        Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Stopped."));
+    }
+
+    private void setupNotification() {
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(mGlobalResources.getResources().getString(R.string.app_name))
+                .setContentText(mGlobalResources.getResources().getString(R.string.notification_stop_service))
+                .setContentIntent(getStopPendingIntent(this))
+                .setDeleteIntent(getStopPendingIntent(this))
+                .setShowWhen(false)
+                .setAutoCancel(false)   // Notification.FLAG_AUTO_CANCEL
+                .setOngoing(true)       // Notification.FLAG_ONGOING_EVENT and Notification.FLAG_NO_CLEAR (http://stackoverflow.com/questions/5338501/android-keep-notification-steady-at-notification-bar)
+                .build();
+
+        startForeground(NOTIFICATION_ID, notification);
+    }
+
+    private void removeNotification() {
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 }

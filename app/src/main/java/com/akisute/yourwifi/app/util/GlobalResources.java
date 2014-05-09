@@ -50,6 +50,10 @@ public class GlobalResources {
         }
     }
 
+    public Resources getResources() {
+        return mResources;
+    }
+
     public String getNetworkTypeName(int networkType) {
         return mNetworkTypeName.get(networkType);
     }

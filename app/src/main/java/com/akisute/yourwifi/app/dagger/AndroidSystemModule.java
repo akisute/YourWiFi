@@ -1,5 +1,6 @@
 package com.akisute.yourwifi.app.dagger;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
@@ -32,6 +33,12 @@ public class AndroidSystemModule {
     @Singleton
     WifiManager provideWifiManager(@ForApplication Context context) {
         return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    NotificationManager provideNotificationManager(@ForApplication Context context) {
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Provides

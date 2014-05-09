@@ -8,10 +8,9 @@ import com.google.common.collect.Ordering;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkCache {
@@ -35,6 +34,10 @@ public class NetworkCache {
         mNetworks.invalidateAll();
     }
 
+    public Network getNetwork(String bssid) {
+        return mNetworks.asMap().get(bssid);
+    }
+
     public List<Network> getAllNetworkList() {
         return getAllNetworkList(NetworkComparators.DEFAULT);
     }
@@ -43,20 +46,30 @@ public class NetworkCache {
         return Ordering.from(comparator).sortedCopy(mNetworks.asMap().values());
     }
 
+    public Essid getEssid(String ssid) {
+        Map<String, Essid> essidMap = getEssidMap();
+        return essidMap.get(ssid);
+    }
+
     public List<Essid> getAllEssidList() {
         return getAllEssidList(EssidComparators.DEFAULT);
     }
 
     public List<Essid> getAllEssidList(Comparator<Essid> comparator) {
+        Map<String, Essid> essidMap = getEssidMap();
+        return Ordering.from(comparator).sortedCopy(essidMap.values());
+    }
+
+    private Map<String, Essid> getEssidMap() {
         Multimap<String, Network> multimap = HashMultimap.create(size(), size() / 2);
         for (Network network : mNetworks.asMap().values()) {
             multimap.put(network.getSsid(), network);
         }
-        Set<Essid> resultSet = new HashSet<Essid>(multimap.keySet().size());
+        Map<String, Essid> resultMap = new HashMap<String, Essid>(multimap.keySet().size());
         for (Map.Entry<String, Collection<Network>> entry : multimap.asMap().entrySet()) {
             Essid essid = Essid.newInstance(entry.getValue());
-            resultSet.add(essid);
+            resultMap.put(entry.getKey(), essid);
         }
-        return Ordering.from(comparator).sortedCopy(resultSet);
+        return resultMap;
     }
 }

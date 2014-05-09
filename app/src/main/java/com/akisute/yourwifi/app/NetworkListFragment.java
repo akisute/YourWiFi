@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.akisute.android.daggered.DaggeredFragment;
 import com.akisute.yourwifi.app.model.NetworkListAdapter;
+import com.akisute.yourwifi.app.util.GlobalResources;
 
 import javax.inject.Inject;
 
@@ -23,13 +24,13 @@ public class NetworkListFragment extends DaggeredFragment {
         @Override
         public void onChanged() {
             super.onChanged();
-            String appName = mResources.getString(R.string.app_name);
-            getActivity().setTitle(mResources.getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
+            String appName = mGlobalResources.getResources().getString(R.string.app_name);
+            getActivity().setTitle(mGlobalResources.getResources().getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
         }
     };
 
     @Inject
-    Resources mResources;
+    GlobalResources mGlobalResources;
     @Inject
     NetworkListAdapter mAdapter;
     @InjectView(android.R.id.list)

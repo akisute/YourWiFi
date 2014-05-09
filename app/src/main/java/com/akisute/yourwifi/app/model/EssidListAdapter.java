@@ -39,8 +39,6 @@ public class EssidListAdapter extends BaseAdapter {
     @Inject
     LayoutInflater mLayoutInflater;
     @Inject
-    Resources mResources;
-    @Inject
     GlobalResources mGlobalResources;
     @Inject
     GlobalEventBus mGlobalEventBus;
@@ -50,9 +48,8 @@ public class EssidListAdapter extends BaseAdapter {
     private final List<Essid> mEssidList = new ArrayList<Essid>();
 
     @Inject
-    public EssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+    public EssidListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         mLayoutInflater = layoutInflater;
-        mResources = resources;
         mGlobalResources = globalResources;
         mGlobalEventBus = globalEventBus;
         mNetworkCache = networkCache;
@@ -102,7 +99,7 @@ public class EssidListAdapter extends BaseAdapter {
         viewHolder.ssid.setText(essid.getSsid());
         viewHolder.crypto.setText(mGlobalResources.getCryptoTypeName(essid.getCryptoType()));
         viewHolder.crypto.setTextColor(mGlobalResources.getCryptoTypeFontColor(essid.getCryptoType()));
-        viewHolder.description.setText(mResources.getQuantityString(R.plurals.list_essid_item_description, essid.getCount(), essid.getCount()));
+        viewHolder.description.setText(mGlobalResources.getResources().getQuantityString(R.plurals.list_essid_item_description, essid.getCount(), essid.getCount()));
 
         return convertView;
     }

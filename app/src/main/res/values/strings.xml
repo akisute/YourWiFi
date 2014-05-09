@@ -34,4 +34,6 @@
     <string name="list_network_item_frequency">%1$dMHz</string>
     <string name="list_network_item_frequency_channel">%1$dMHz (Channel %2$d)</string>
 
+    <string name="notification_stop_service">Click to stop the service</string>
+
 </resources>

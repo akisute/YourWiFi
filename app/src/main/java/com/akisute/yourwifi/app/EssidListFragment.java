@@ -15,6 +15,7 @@ import com.akisute.yourwifi.app.model.Essid;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.Network;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.akisute.yourwifi.app.util.GlobalResources;
 
 import java.util.List;
 
@@ -29,13 +30,13 @@ public class EssidListFragment extends DaggeredFragment {
         @Override
         public void onChanged() {
             super.onChanged();
-            String appName = mResources.getString(R.string.app_name);
-            getActivity().setTitle(mResources.getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
+            String appName = mGlobalResources.getResources().getString(R.string.app_name);
+            getActivity().setTitle(mGlobalResources.getResources().getQuantityString(R.plurals.activity_main_title, mAdapter.getCount(), appName, mAdapter.getCount()));
         }
     };
 
     @Inject
-    Resources mResources;
+    GlobalResources mGlobalResources;
     @Inject
     GlobalEventBus mGlobalEventBus;
     @Inject

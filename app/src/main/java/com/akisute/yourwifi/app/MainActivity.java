@@ -19,8 +19,6 @@ public class MainActivity extends DaggeredActivity {
 
     @Inject
     GlobalEventBus mGlobalEventBus;
-    @Inject
-    NetworkScanManager mNetworkScanManager;
 
     private Fragment mCurrentFragment;
 
@@ -28,16 +26,17 @@ public class MainActivity extends DaggeredActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         showEssidFragment();
         mGlobalEventBus.register(this);
-        mNetworkScanManager.startScan();
+        NetworkRecordingService.start(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mGlobalEventBus.unregister(this);
-        mNetworkScanManager.stopScan();
+        // Do not stop NetworkRecordingService to keep it running background. It will be stopped from Notification Manager.
     }
 
     @Override
@@ -80,8 +79,7 @@ public class MainActivity extends DaggeredActivity {
 
     @Subscribe
     public void onEssidSelectedEvent(EssidListFragment.OnEssidSelectedEvent event) {
-        Intent intent = new Intent(this, EssidDetailActivity.class);
-        startActivity(intent);
+        EssidDetailActivity.startActivity(this, event.getEssid());
     }
 
     private void showBssidFragment() {

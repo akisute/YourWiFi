@@ -1,14 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="com.akisute.yourwifi.app.EssidDetailActivity"
     tools:ignore="MergeRootFrame">
 
-    <fragment
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:name="com.akisute.yourwifi.app.EssidDetailFragment"
-        android:id="@+id/fragment"
-        tools:layout="@layout/fragment_essid_detail" />
 </FrameLayout>

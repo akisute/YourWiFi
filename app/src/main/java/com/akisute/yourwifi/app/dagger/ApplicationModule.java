@@ -12,6 +12,7 @@ import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
 import com.akisute.yourwifi.app.NetworkListFragment;
+import com.akisute.yourwifi.app.NetworkRecordingService;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.NetworkCache;
 import com.akisute.yourwifi.app.model.NetworkListAdapter;
@@ -34,7 +35,8 @@ import dagger.Provides;
                 EssidDetailActivity.class,
                 NetworkListFragment.class,
                 EssidListFragment.class,
-                EssidDetailFragment.class
+                EssidDetailFragment.class,
+                NetworkRecordingService.class
         }
 )
 public class ApplicationModule {
@@ -69,8 +71,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, Resources resources, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
-        return new EssidListAdapter(layoutInflater, resources, globalResources, globalEventBus, networkCache);
+    EssidListAdapter providesEssidListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        return new EssidListAdapter(layoutInflater, globalResources, globalEventBus, networkCache);
     }
 
 }
