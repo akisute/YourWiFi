@@ -1,37 +1,42 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/list_item_vertical_margin"
+    android:paddingLeft="@dimen/list_item_horizontal_margin"
+    android:paddingRight="@dimen/list_item_horizontal_margin"
+    android:paddingTop="@dimen/list_item_vertical_margin">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="MySSID"
-        android:id="@+id/ssid"
-        android:layout_marginLeft="@dimen/list_item_horizontal_margin"
-        android:layout_marginTop="@dimen/list_item_vertical_margin"
-        android:layout_marginBottom="@dimen/list_item_vertical_margin"
-        android:layout_marginRight="@dimen/list_item_horizontal_margin" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/crypto_wpa2"
-        android:id="@+id/crypto"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="@color/font_crypto_wpa2"
-        android:layout_marginLeft="@dimen/list_item_horizontal_margin"
-        android:layout_marginRight="@dimen/list_item_horizontal_margin" />
+        <TextView
+            android:id="@+id/ssid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MySSID"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/list_essid_item_description"
-        android:id="@+id/description"
-        android:layout_alignParentTop="false"
-        android:layout_alignStart="@+id/ssid"
-        android:layout_below="@+id/ssid" />
-</RelativeLayout>
+        <TextView
+            android:id="@+id/crypto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/crypto_wpa2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/font_crypto_wpa2" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ssid"
+            android:layout_below="@+id/ssid"
+            android:text="@string/list_essid_item_description"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </RelativeLayout>
+
+</FrameLayout>
+
+
+
