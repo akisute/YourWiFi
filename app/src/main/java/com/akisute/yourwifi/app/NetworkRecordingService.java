@@ -100,6 +100,8 @@ public class NetworkRecordingService extends DaggeredService {
     }
 
     private void setupNotification() {
+        // TODO: Display number of currently available Networks
+        // TODO: Update Notification using NotificationManager.notify(NOTIFICATION_ID) and GlobalEventBus
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(mGlobalResources.getResources().getString(R.string.app_name))
