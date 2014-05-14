@@ -3,6 +3,7 @@ package com.akisute.yourwifi.app.dagger;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
@@ -33,6 +34,12 @@ public class AndroidSystemModule {
     @Singleton
     WifiManager provideWifiManager(@ForApplication Context context) {
         return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    LocationManager provideLocationManager(@ForApplication Context context) {
+        return (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Provides

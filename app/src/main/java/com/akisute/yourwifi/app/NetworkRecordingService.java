@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.akisute.android.daggered.DaggeredService;
 import com.akisute.yourwifi.app.intent.Intents;
+import com.akisute.yourwifi.app.model.LocationScanManager;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
 import com.akisute.yourwifi.app.util.GlobalResources;
 
@@ -51,6 +52,8 @@ public class NetworkRecordingService extends DaggeredService {
     NotificationManager mNotificationManager;
     @Inject
     NetworkScanManager mNetworkScanManager;
+    @Inject
+    LocationScanManager mLocationScanManager;
 
     @Override
     public void onCreate() {
@@ -85,6 +88,7 @@ public class NetworkRecordingService extends DaggeredService {
     private void handleStart() {
         setupNotification();
         mNetworkScanManager.startScan();
+        mLocationScanManager.debug();
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Started."));
     }
 

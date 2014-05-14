@@ -2,6 +2,7 @@ package com.akisute.yourwifi.app.dagger;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 
@@ -15,6 +16,7 @@ import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.NetworkRecordingService;
 import com.akisute.yourwifi.app.model.BssidListAdapter;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
+import com.akisute.yourwifi.app.model.LocationScanManager;
 import com.akisute.yourwifi.app.model.NetworkCache;
 import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
@@ -64,6 +66,12 @@ public class ApplicationModule {
     @Singleton
     NetworkScanManager providesNetworkScanManager(@ForApplication Context context, WifiManager wifiManager, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         return new NetworkScanManager(context, wifiManager, globalEventBus, networkCache);
+    }
+
+    @Provides
+    @Singleton
+    LocationScanManager providesLocationScanManager(LocationManager locationManager) {
+        return new LocationScanManager(locationManager);
     }
 
     @Provides
