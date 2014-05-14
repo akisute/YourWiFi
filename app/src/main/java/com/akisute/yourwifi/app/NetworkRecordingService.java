@@ -88,13 +88,14 @@ public class NetworkRecordingService extends DaggeredService {
     private void handleStart() {
         setupNotification();
         mNetworkScanManager.startScan();
-        mLocationScanManager.debug();
+        mLocationScanManager.startScan();
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Started."));
     }
 
     private void handleStop() {
         removeNotification();
         mNetworkScanManager.stopScan();
+        mLocationScanManager.stopScan();
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Stopped."));
     }
 
