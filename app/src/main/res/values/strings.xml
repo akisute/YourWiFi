@@ -18,7 +18,6 @@
 
     <string name="activity_main_title">%1$s (%2$d Networks)</string>
     <plurals name="activity_main_title">
-
         <!-- plurals doesn't behave well on several languages (like Portuguese, Russians, etc...) so base language settings should only contain "other" quantity -->
         <!-- Add other quantity settings in specific languages settings -->
         <!-- https://code.google.com/p/android/issues/detail?id=8287 -->

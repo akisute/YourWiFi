@@ -5,7 +5,7 @@ import android.os.Looper;
 
 import com.squareup.otto.Bus;
 
-public final class GlobalEventBus extends Bus {
+public class GlobalEventBus extends Bus {
 
     private final Handler mMainThreadHandler;
 

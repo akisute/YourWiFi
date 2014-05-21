@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.akisute.android.daggered.DaggeredActivity;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ public class MainActivity extends DaggeredActivity {
 
     @Inject
     GlobalEventBus mGlobalEventBus;
+    @Inject
+    GlobalSharedPreferences mGlobalSharedPreferences;
 
     private Fragment mCurrentFragment;
 
@@ -25,7 +28,18 @@ public class MainActivity extends DaggeredActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        showEssidFragment();
+        switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
+                showEssidFragment();
+                break;
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
+                showRawNetworkFragment();
+                break;
+            default:
+                showEssidFragment();
+                break;
+        }
+
         mGlobalEventBus.register(this);
         NetworkRecordingService.start(this);
     }
@@ -41,14 +55,14 @@ public class MainActivity extends DaggeredActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        MenuItem menuActionShowBssids = menu.findItem(R.id.action_show_bssids);
+        MenuItem menuActionShowRawNetworks = menu.findItem(R.id.action_show_raw_networks);
         MenuItem menuActionShowEssids = menu.findItem(R.id.action_show_essids);
 
         if (mCurrentFragment instanceof RawNetworkListFragment) {
-            menuActionShowBssids.setVisible(false);
+            menuActionShowRawNetworks.setVisible(false);
             menuActionShowEssids.setVisible(true);
         } else if (mCurrentFragment instanceof EssidListFragment) {
-            menuActionShowBssids.setVisible(true);
+            menuActionShowRawNetworks.setVisible(true);
             menuActionShowEssids.setVisible(false);
         }
         return true;
@@ -63,7 +77,7 @@ public class MainActivity extends DaggeredActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_show_bssids:
+            case R.id.action_show_raw_networks:
                 showRawNetworkFragment();
                 return true;
             case R.id.action_show_essids:
@@ -86,6 +100,7 @@ public class MainActivity extends DaggeredActivity {
         transaction.replace(R.id.fragment, fragment);
         transaction.commit();
         mCurrentFragment = fragment;
+        mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS);
     }
 
     private void showEssidFragment() {
@@ -94,5 +109,6 @@ public class MainActivity extends DaggeredActivity {
         transaction.replace(R.id.fragment, fragment);
         transaction.commit();
         mCurrentFragment = fragment;
+        mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS);
     }
 }

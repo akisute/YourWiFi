@@ -12,8 +12,12 @@ import android.util.Log;
 import com.akisute.android.daggered.DaggeredService;
 import com.akisute.yourwifi.app.intent.Intents;
 import com.akisute.yourwifi.app.model.LocationScanManager;
+import com.akisute.yourwifi.app.model.NetworkCache;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
+import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.akisute.yourwifi.app.util.GlobalResources;
+import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -49,9 +53,15 @@ public class NetworkRecordingService extends DaggeredService {
     @Inject
     GlobalResources mGlobalResources;
     @Inject
+    GlobalEventBus mGlobalEventBus;
+    @Inject
+    GlobalSharedPreferences mGlobalSharedPreferences;
+    @Inject
     NotificationManager mNotificationManager;
     @Inject
     NetworkScanManager mNetworkScanManager;
+    @Inject
+    NetworkCache mNetworkCache;
     @Inject
     LocationScanManager mLocationScanManager;
 
@@ -89,6 +99,7 @@ public class NetworkRecordingService extends DaggeredService {
         setupNotification();
         mNetworkScanManager.startScan();
         mLocationScanManager.startScan();
+        mGlobalEventBus.register(this);
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Started."));
     }
 
@@ -96,24 +107,50 @@ public class NetworkRecordingService extends DaggeredService {
         removeNotification();
         mNetworkScanManager.stopScan();
         mLocationScanManager.stopScan();
+        mGlobalEventBus.unregister(this);
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Stopped."));
     }
 
-    private void setupNotification() {
-        // TODO: Display number of currently available Networks
-        // TODO: Update Notification using NotificationManager.notify(NOTIFICATION_ID) and GlobalEventBus
-        Notification notification = new Notification.Builder(this)
+    @Subscribe
+    public void onNewScanResultsEvent(NetworkScanManager.OnNewScanResultsEvent event) {
+        updateNotification();
+    }
+
+    private Notification createNotification() {
+        int count;
+        switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
+                count = mNetworkCache.getEssidCount();
+                break;
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
+                count = mNetworkCache.getNetworkCount();
+                break;
+            default:
+                count = mNetworkCache.getEssidCount();
+                break;
+        }
+
+        String appName = mGlobalResources.getResources().getString(R.string.app_name);
+        String contentTitle = mGlobalResources.getResources().getQuantityString(R.plurals.activity_main_title, count, appName, count);
+        String contentText = mGlobalResources.getResources().getString(R.string.notification_stop_service);
+        return new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(mGlobalResources.getResources().getString(R.string.app_name))
-                .setContentText(mGlobalResources.getResources().getString(R.string.notification_stop_service))
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
                 .setContentIntent(getStopPendingIntent(this))
                 .setDeleteIntent(getStopPendingIntent(this))
                 .setShowWhen(false)
                 .setAutoCancel(false)   // Notification.FLAG_AUTO_CANCEL
                 .setOngoing(true)       // Notification.FLAG_ONGOING_EVENT and Notification.FLAG_NO_CLEAR (http://stackoverflow.com/questions/5338501/android-keep-notification-steady-at-notification-bar)
                 .build();
+    }
 
-        startForeground(NOTIFICATION_ID, notification);
+    private void setupNotification() {
+        startForeground(NOTIFICATION_ID, createNotification());
+    }
+
+    private void updateNotification() {
+        mNotificationManager.notify(NOTIFICATION_ID, createNotification());
     }
 
     private void removeNotification() {

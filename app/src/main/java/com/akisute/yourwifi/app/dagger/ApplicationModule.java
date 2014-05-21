@@ -1,6 +1,7 @@
 package com.akisute.yourwifi.app.dagger;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
@@ -12,16 +13,17 @@ import com.akisute.yourwifi.app.EssidDetailActivity;
 import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
-import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.NetworkRecordingService;
+import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.model.BssidListAdapter;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.LocationScanManager;
 import com.akisute.yourwifi.app.model.NetworkCache;
-import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.model.NetworkScanManager;
+import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.akisute.yourwifi.app.util.GlobalResources;
+import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 
 import javax.inject.Singleton;
 
@@ -54,6 +56,12 @@ public class ApplicationModule {
     @Singleton
     GlobalResources provideGlobalResources(Resources resources) {
         return new GlobalResources(resources);
+    }
+
+    @Provides
+    @Singleton
+    GlobalSharedPreferences provideGlobalSharedPreferences(SharedPreferences sharedPreferences) {
+        return new GlobalSharedPreferences(sharedPreferences);
     }
 
     @Provides

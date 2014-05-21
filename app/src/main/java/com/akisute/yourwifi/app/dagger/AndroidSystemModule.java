@@ -2,6 +2,7 @@ package com.akisute.yourwifi.app.dagger;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
@@ -28,6 +29,12 @@ public class AndroidSystemModule {
     @Singleton
     Resources provideResources(@ForApplication Context context) {
         return context.getResources();
+    }
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences(@ForApplication Context context) {
+        return context.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);
     }
 
     @Provides

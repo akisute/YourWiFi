@@ -20,10 +20,6 @@ public class NetworkCache {
             .expireAfterWrite(30, TimeUnit.SECONDS)
             .build();
 
-    public int size() {
-        return (int) mNetworks.size();
-    }
-
     public void put(Network network) {
         if (network != null) {
             mNetworks.put(network.getBssid(), network);
@@ -32,6 +28,10 @@ public class NetworkCache {
 
     public void clear() {
         mNetworks.invalidateAll();
+    }
+
+    public int getNetworkCount() {
+        return (int) mNetworks.size();
     }
 
     public Network getNetwork(String bssid) {
@@ -44,6 +44,11 @@ public class NetworkCache {
 
     public List<Network> getAllNetworkList(Comparator<Network> comparator) {
         return Ordering.from(comparator).sortedCopy(mNetworks.asMap().values());
+    }
+
+    public int getEssidCount() {
+        Map<String, Essid> essidMap = getEssidMap();
+        return essidMap.size();
     }
 
     public Essid getEssid(String ssid) {
@@ -61,7 +66,7 @@ public class NetworkCache {
     }
 
     private Map<String, Essid> getEssidMap() {
-        Multimap<String, Network> multimap = HashMultimap.create(size(), size() / 2);
+        Multimap<String, Network> multimap = HashMultimap.create((int) mNetworks.size(), (int) mNetworks.size() / 2);
         for (Network network : mNetworks.asMap().values()) {
             multimap.put(network.getSsid(), network);
         }
