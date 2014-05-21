@@ -110,7 +110,7 @@ public class NetworkScanManager {
 
     public static class OnNewScanResultsEvent {
 
-        private List<Network> mNetworkList;
+        private final List<Network> mNetworkList;
 
         public OnNewScanResultsEvent(List<Network> networkList) {
             mNetworkList = networkList;

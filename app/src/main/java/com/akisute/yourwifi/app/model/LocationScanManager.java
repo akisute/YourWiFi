@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.akisute.yourwifi.app.util.GlobalEventBus;
+
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,12 +19,15 @@ public class LocationScanManager implements LocationListener {
 
     @Inject
     LocationManager mLocationManager;
+    @Inject
+    GlobalEventBus mGlobalEventBus;
 
     private final SortedSet<Location> mLocations = new TreeSet<Location>(new LocationComparator());
 
     @Inject
-    public LocationScanManager(LocationManager locationManager) {
+    public LocationScanManager(LocationManager locationManager, GlobalEventBus globalEventBus) {
         mLocationManager = locationManager;
+        mGlobalEventBus = globalEventBus;
     }
 
     public void startScan() {
@@ -61,6 +66,10 @@ public class LocationScanManager implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         addLocation(location);
+        Location currentLocation = getCurrentLocation();
+        if (!currentLocation.equals(location)) {
+            mGlobalEventBus.postInMainThread(new OnLocationChangedEvent(currentLocation));
+        }
     }
 
     @Override
@@ -134,6 +143,19 @@ public class LocationScanManager implements LocationListener {
                 return LOCATION_IS_BETTER;
             }
             return LOCATION2_IS_BETTER;
+        }
+    }
+
+    public static class OnLocationChangedEvent {
+
+        private final Location mLocation;
+
+        public OnLocationChangedEvent(Location location) {
+            mLocation = location;
+        }
+
+        public Location getLocation() {
+            return mLocation;
         }
     }
 }

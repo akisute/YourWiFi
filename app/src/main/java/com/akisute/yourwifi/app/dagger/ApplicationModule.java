@@ -60,8 +60,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GlobalSharedPreferences provideGlobalSharedPreferences(SharedPreferences sharedPreferences) {
-        return new GlobalSharedPreferences(sharedPreferences);
+    GlobalSharedPreferences provideGlobalSharedPreferences(SharedPreferences sharedPreferences, GlobalEventBus globalEventBus) {
+        return new GlobalSharedPreferences(sharedPreferences, globalEventBus);
     }
 
     @Provides
@@ -78,8 +78,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    LocationScanManager providesLocationScanManager(LocationManager locationManager) {
-        return new LocationScanManager(locationManager);
+    LocationScanManager providesLocationScanManager(LocationManager locationManager, GlobalEventBus globalEventBus) {
+        return new LocationScanManager(locationManager, globalEventBus);
     }
 
     @Provides

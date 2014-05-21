@@ -116,6 +116,11 @@ public class NetworkRecordingService extends DaggeredService {
         updateNotification();
     }
 
+    @Subscribe
+    public void onNetworkListDisplayModeChangedEvent(GlobalSharedPreferences.NetworkListDisplayMode.OnChangeEvent event) {
+        updateNotification();
+    }
+
     private Notification createNotification() {
         int count;
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {

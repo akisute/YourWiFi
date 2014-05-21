@@ -8,16 +8,22 @@ public class GlobalSharedPreferences {
 
     @Inject
     SharedPreferences mSharedPreferences;
+    @Inject
+    GlobalEventBus mGlobalEventBus;
 
     @Inject
-    public GlobalSharedPreferences(SharedPreferences sharedPreferences) {
+    public GlobalSharedPreferences(SharedPreferences sharedPreferences, GlobalEventBus globalEventBus) {
         mSharedPreferences = sharedPreferences;
+        mGlobalEventBus = globalEventBus;
     }
 
     public static final class NetworkListDisplayMode {
-        static final String KEY = "NetworkListDisplayMode";
+        private static final String KEY = "NetworkListDisplayMode";
         public static final int SHOW_ESSIDS = 0;
         public static final int SHOW_RAW_NETWORKS = 1;
+
+        public static final class OnChangeEvent {
+        }
     }
 
     public int getNetworkListDisplayMode() {
@@ -28,5 +34,6 @@ public class GlobalSharedPreferences {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt(NetworkListDisplayMode.KEY, mode);
         editor.commit();
+        mGlobalEventBus.postInMainThread(new NetworkListDisplayMode.OnChangeEvent());
     }
 }
