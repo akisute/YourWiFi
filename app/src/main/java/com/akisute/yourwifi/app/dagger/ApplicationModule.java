@@ -83,8 +83,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    RawNetworkListAdapter providesRawNetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
-        return new RawNetworkListAdapter(layoutInflater, globalEventBus, networkCache);
+    RawNetworkListAdapter providesRawNetworkListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+        return new RawNetworkListAdapter(layoutInflater, globalResources, globalEventBus, networkCache);
     }
 
     @Provides

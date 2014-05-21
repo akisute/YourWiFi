@@ -6,7 +6,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.akisute.yourwifi.app.R;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
+import com.akisute.yourwifi.app.util.GlobalResources;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -20,8 +22,19 @@ import butterknife.InjectView;
 public class RawNetworkListAdapter extends BaseAdapter {
 
     class ViewHolder {
-        @InjectView(android.R.id.text1)
-        TextView textView;
+
+        @InjectView(R.id.ssid)
+        TextView ssid;
+        @InjectView(R.id.bssid)
+        TextView bssid;
+        @InjectView(R.id.crypto)
+        TextView crypto;
+        @InjectView(R.id.level)
+        TextView level;
+        @InjectView(R.id.frequency)
+        TextView frequency;
+        @InjectView(R.id.capabilities)
+        TextView capabilities;
 
         ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -31,6 +44,8 @@ public class RawNetworkListAdapter extends BaseAdapter {
     @Inject
     LayoutInflater mLayoutInflater;
     @Inject
+    GlobalResources mGlobalResources;
+    @Inject
     GlobalEventBus mGlobalEventBus;
     @Inject
     NetworkCache mNetworkCache;
@@ -38,8 +53,9 @@ public class RawNetworkListAdapter extends BaseAdapter {
     private final List<Network> mNetworkList = new ArrayList<Network>();
 
     @Inject
-    public RawNetworkListAdapter(LayoutInflater layoutInflater, GlobalEventBus globalEventBus, NetworkCache networkCache) {
+    public RawNetworkListAdapter(LayoutInflater layoutInflater, GlobalResources globalResources, GlobalEventBus globalEventBus, NetworkCache networkCache) {
         mLayoutInflater = layoutInflater;
+        mGlobalResources = globalResources;
         mGlobalEventBus = globalEventBus;
         mNetworkCache = networkCache;
     }
@@ -77,7 +93,7 @@ public class RawNetworkListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(android.R.layout.simple_list_item_1, null, false);
+            convertView = mLayoutInflater.inflate(R.layout.list_raw_network_item, null, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
@@ -85,7 +101,19 @@ public class RawNetworkListAdapter extends BaseAdapter {
         }
 
         Network network = getItem(position);
-        viewHolder.textView.setText(network.getDescription());
+        viewHolder.ssid.setText(network.getSsid());
+        viewHolder.bssid.setText(network.getBssid());
+        viewHolder.crypto.setText(mGlobalResources.getCryptoTypeName(network.getCryptoType()));
+        viewHolder.crypto.setTextColor(mGlobalResources.getCryptoTypeFontColor(network.getCryptoType()));
+        viewHolder.level.setText(mGlobalResources.getResources().getString(R.string.list_network_item_level, network.getLevel()));
+        viewHolder.capabilities.setText(network.getCapabilities());
+
+        int channel = network.getChannel();
+        if (channel == Network.CHANNEL_UNKNOWN) {
+            viewHolder.frequency.setText(mGlobalResources.getResources().getString(R.string.list_network_item_frequency, network.getFrequency()));
+        } else {
+            viewHolder.frequency.setText(mGlobalResources.getResources().getString(R.string.list_network_item_frequency_channel, network.getFrequency(), channel));
+        }
 
         return convertView;
     }

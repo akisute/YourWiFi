@@ -6,8 +6,6 @@ import java.util.Comparator;
 
 public class NetworkComparators {
 
-    public static final Comparator<Network> DEFAULT = Ordering.from(new SsidComparator()).compound(new FrequencyComparator());
-
     public static final Comparator<Network> UPDATED_AT_ASC = new UpdatedAtComparator();
     public static final Comparator<Network> UPDATED_AT_DESC = Ordering.from(new UpdatedAtComparator()).reverse();
 
@@ -16,6 +14,8 @@ public class NetworkComparators {
 
     public static final Comparator<Network> CRYPTOTYPE_WEAKEST_TO_STRONGEST = new CryptoTypeStrengthComparator();
     public static final Comparator<Network> CRYPTOTYPE_STRONGEST_TO_WEAKEST = Ordering.from(new CryptoTypeStrengthComparator()).reverse();
+
+    public static final Comparator<Network> DEFAULT = Ordering.from(new SsidComparator()).compound(LEVEL_DESC);
 
 
     public static class UpdatedAtComparator implements Comparator<Network> {
