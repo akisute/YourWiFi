@@ -128,7 +128,6 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     private void showNetworkTransactionUsingSharedPreferences(FragmentTransaction transaction) {
-        // TODO: do not switch fragment if tabs other than network list is selected
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
                 showEssidFragment(transaction);
@@ -143,19 +142,16 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     private void showRawNetworkFragment(FragmentTransaction transaction) {
-        // TODO: These fragments should be reused using getFragmentManager().putFragment()
         RawNetworkListFragment fragment = new RawNetworkListFragment();
         transaction.replace(R.id.fragment, fragment);
     }
 
     private void showEssidFragment(FragmentTransaction transaction) {
-        // TODO: These fragments should be reused using getFragmentManager().putFragment()
         EssidListFragment fragment = new EssidListFragment();
         transaction.replace(R.id.fragment, fragment);
     }
 
     private void showMapFragment(FragmentTransaction transaction) {
-        // TODO: These fragments should be reused using getFragmentManager().putFragment()
         MapFragment fragment = new MapFragment();
         transaction.replace(R.id.fragment, fragment);
     }
