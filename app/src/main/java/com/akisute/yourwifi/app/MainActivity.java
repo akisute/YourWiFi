@@ -52,14 +52,26 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     @Override
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("tab", getActionBar().getSelectedTab().getPosition());
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            ActionBar.Tab tab = actionBar.getSelectedTab();
+            if (tab != null) {
+                outState.putInt("tab", tab.getPosition());
+            }
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int position = savedInstanceState.getInt("tab");
-        getActionBar().getTabAt(position).select();
+        int position = savedInstanceState.getInt("tab", 0);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            ActionBar.Tab tab = actionBar.getTabAt(position);
+            if (tab != null) {
+                tab.select();
+            }
+        }
     }
 
     @Override
