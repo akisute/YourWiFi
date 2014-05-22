@@ -1,6 +1,5 @@
 package com.akisute.yourwifi.app;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,25 +20,11 @@ public class MainActivity extends DaggeredActivity {
     @Inject
     GlobalSharedPreferences mGlobalSharedPreferences;
 
-    private Fragment mCurrentFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
-            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
-                showEssidFragment();
-                break;
-            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
-                showRawNetworkFragment();
-                break;
-            default:
-                showEssidFragment();
-                break;
-        }
-
+        showFragmentUsingGlobalSharedPreferences();
         mGlobalEventBus.register(this);
         NetworkRecordingService.start(this);
     }
@@ -52,63 +37,58 @@ public class MainActivity extends DaggeredActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
-        MenuItem menuActionShowRawNetworks = menu.findItem(R.id.action_show_raw_networks);
-        MenuItem menuActionShowEssids = menu.findItem(R.id.action_show_essids);
-
-        if (mCurrentFragment instanceof RawNetworkListFragment) {
-            menuActionShowRawNetworks.setVisible(false);
-            menuActionShowEssids.setVisible(true);
-        } else if (mCurrentFragment instanceof EssidListFragment) {
-            menuActionShowRawNetworks.setVisible(true);
-            menuActionShowEssids.setVisible(false);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_show_raw_networks:
-                showRawNetworkFragment();
-                return true;
-            case R.id.action_show_essids:
-                showEssidFragment();
-                return true;
             case R.id.action_settings:
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     @Subscribe
-    public void onEssidSelectedEvent(EssidListFragment.OnEssidSelectedEvent event) {
+    public void onEssidListItemSelectedEvent(EssidListFragment.OnEssidListItemSelectedEvent event) {
         EssidDetailActivity.startActivity(this, event.getEssid());
     }
 
+    @Subscribe
+    public void onNetworkListDisplayModeChangeEvent(GlobalSharedPreferences.NetworkListDisplayMode.OnChangeEvent event) {
+        showFragmentUsingGlobalSharedPreferences();
+    }
+
+    private void showFragmentUsingGlobalSharedPreferences() {
+        // TODO: do not switch fragment, if tabs other than network list is selected. ...possibly ok since container should not be shared between network lists and maps
+        switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
+                showEssidFragment();
+                break;
+            case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
+                showRawNetworkFragment();
+                break;
+            default:
+                showEssidFragment();
+                break;
+        }
+    }
+
     private void showRawNetworkFragment() {
+        // TODO: These fragments should be reused using getFragmentManager().putFragment()
         RawNetworkListFragment fragment = new RawNetworkListFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, fragment);
         transaction.commit();
-        mCurrentFragment = fragment;
-        mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS);
     }
 
     private void showEssidFragment() {
+        // TODO: These fragments should be reused using getFragmentManager().putFragment()
         EssidListFragment fragment = new EssidListFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, fragment);
         transaction.commit();
-        mCurrentFragment = fragment;
-        mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS);
     }
 }

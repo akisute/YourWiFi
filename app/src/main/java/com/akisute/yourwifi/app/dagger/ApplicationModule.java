@@ -13,6 +13,7 @@ import com.akisute.yourwifi.app.EssidDetailActivity;
 import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
 import com.akisute.yourwifi.app.MainActivity;
+import com.akisute.yourwifi.app.MapFragment;
 import com.akisute.yourwifi.app.NetworkRecordingService;
 import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.model.BssidListAdapter;
@@ -36,11 +37,15 @@ import dagger.Provides;
                 AndroidSystemModule.class
         },
         injects = {
+                // Main Activity
                 MainActivity.class,
-                EssidDetailActivity.class,
-                RawNetworkListFragment.class,
                 EssidListFragment.class,
+                RawNetworkListFragment.class,
+                MapFragment.class,
+                // Detail Activity
+                EssidDetailActivity.class,
                 EssidDetailFragment.class,
+                // Service
                 NetworkRecordingService.class
         }
 )

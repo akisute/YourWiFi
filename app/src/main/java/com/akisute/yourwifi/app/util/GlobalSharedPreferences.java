@@ -31,9 +31,12 @@ public class GlobalSharedPreferences {
     }
 
     public void setNetworkListDisplayMode(int mode) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putInt(NetworkListDisplayMode.KEY, mode);
-        editor.commit();
-        mGlobalEventBus.postInMainThread(new NetworkListDisplayMode.OnChangeEvent());
+        int currentMode = getNetworkListDisplayMode();
+        if (currentMode != mode) {
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putInt(NetworkListDisplayMode.KEY, mode);
+            editor.commit();
+            mGlobalEventBus.postInMainThread(new NetworkListDisplayMode.OnChangeEvent());
+        }
     }
 }

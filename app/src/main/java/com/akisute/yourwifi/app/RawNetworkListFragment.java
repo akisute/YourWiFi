@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -11,6 +14,7 @@ import android.widget.ListView;
 import com.akisute.android.daggered.DaggeredFragment;
 import com.akisute.yourwifi.app.model.RawNetworkListAdapter;
 import com.akisute.yourwifi.app.util.GlobalResources;
+import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 
 import javax.inject.Inject;
 
@@ -30,6 +34,8 @@ public class RawNetworkListFragment extends DaggeredFragment {
 
     @Inject
     GlobalResources mGlobalResources;
+    @Inject
+    GlobalSharedPreferences mGlobalSharedPreferences;
     @Inject
     RawNetworkListAdapter mAdapter;
     @InjectView(android.R.id.list)
@@ -55,6 +61,7 @@ public class RawNetworkListFragment extends DaggeredFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -64,5 +71,20 @@ public class RawNetworkListFragment extends DaggeredFragment {
         mListView.setAdapter(mAdapter);
         mAdapter.update();
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_raw_network_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_essids:
+                mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS);
+                return true;
+        }
+        return false;
     }
 }

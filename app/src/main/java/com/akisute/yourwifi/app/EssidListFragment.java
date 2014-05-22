@@ -1,10 +1,12 @@
 package com.akisute.yourwifi.app;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,11 +15,9 @@ import android.widget.ListView;
 import com.akisute.android.daggered.DaggeredFragment;
 import com.akisute.yourwifi.app.model.Essid;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
-import com.akisute.yourwifi.app.model.Network;
 import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.akisute.yourwifi.app.util.GlobalResources;
-
-import java.util.List;
+import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 
 import javax.inject.Inject;
 
@@ -39,6 +39,8 @@ public class EssidListFragment extends DaggeredFragment {
     GlobalResources mGlobalResources;
     @Inject
     GlobalEventBus mGlobalEventBus;
+    @Inject
+    GlobalSharedPreferences mGlobalSharedPreferences;
     @Inject
     EssidListAdapter mAdapter;
     @InjectView(android.R.id.list)
@@ -64,6 +66,7 @@ public class EssidListFragment extends DaggeredFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -75,18 +78,33 @@ public class EssidListFragment extends DaggeredFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Essid essid = mAdapter.getItem(position);
-                mGlobalEventBus.postInMainThread(new OnEssidSelectedEvent(essid));
+                mGlobalEventBus.postInMainThread(new OnEssidListItemSelectedEvent(essid));
             }
         });
         mAdapter.update();
         return view;
     }
 
-    public static class OnEssidSelectedEvent {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_essid_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_raw_networks:
+                mGlobalSharedPreferences.setNetworkListDisplayMode(GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS);
+                return true;
+        }
+        return false;
+    }
+
+    public static class OnEssidListItemSelectedEvent {
 
         private final Essid mEssid;
 
-        public OnEssidSelectedEvent(Essid essid) {
+        public OnEssidListItemSelectedEvent(Essid essid) {
             mEssid = essid;
         }
 
