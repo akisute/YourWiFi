@@ -6,13 +6,16 @@ import java.util.Comparator;
 
 public class EssidComparators {
 
-    public static final Comparator<Essid> DEFAULT = Ordering.from(new SsidComparator()).compound(new CryptoTypeStrengthComparator());
-
     public static final Comparator<Essid> UPDATED_AT_ASC = new UpdatedAtComparator();
     public static final Comparator<Essid> UPDATED_AT_DESC = Ordering.from(new UpdatedAtComparator()).reverse();
 
+    public static final Comparator<Essid> LEVEL_ASC = new LevelComparator();
+    public static final Comparator<Essid> LEVEL_DESC = Ordering.from(new LevelComparator()).reverse();
+
     public static final Comparator<Essid> CRYPTOTYPE_WEAKEST_TO_STRONGEST = new CryptoTypeStrengthComparator();
     public static final Comparator<Essid> CRYPTOTYPE_STRONGEST_TO_WEAKEST = Ordering.from(new CryptoTypeStrengthComparator()).reverse();
+
+    public static final Comparator<Essid> DEFAULT = Ordering.from(LEVEL_DESC).compound(CRYPTOTYPE_WEAKEST_TO_STRONGEST).compound(new SsidComparator());
 
 
     public static class UpdatedAtComparator implements Comparator<Essid> {
@@ -30,6 +33,16 @@ public class EssidComparators {
             ssid1 = (ssid1 == null) ? "" : ssid1;
             ssid2 = (ssid2 == null) ? "" : ssid2;
             return ssid1.compareTo(ssid2);
+        }
+    }
+
+
+    public static class LevelComparator implements Comparator<Essid> {
+        @Override
+        public int compare(Essid essid, Essid essid2) {
+            int level1 = essid.getLevel();
+            int level2 = essid2.getLevel();
+            return Integer.compare(level1, level2);
         }
     }
 

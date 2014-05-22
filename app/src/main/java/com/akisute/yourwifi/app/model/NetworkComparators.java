@@ -15,7 +15,7 @@ public class NetworkComparators {
     public static final Comparator<Network> CRYPTOTYPE_WEAKEST_TO_STRONGEST = new CryptoTypeStrengthComparator();
     public static final Comparator<Network> CRYPTOTYPE_STRONGEST_TO_WEAKEST = Ordering.from(new CryptoTypeStrengthComparator()).reverse();
 
-    public static final Comparator<Network> DEFAULT = Ordering.from(new SsidComparator()).compound(LEVEL_DESC);
+    public static final Comparator<Network> DEFAULT = Ordering.from(LEVEL_DESC).compound(CRYPTOTYPE_WEAKEST_TO_STRONGEST).compound(new SsidComparator());
 
 
     public static class UpdatedAtComparator implements Comparator<Network> {
