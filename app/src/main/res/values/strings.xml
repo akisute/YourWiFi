@@ -12,6 +12,9 @@
     <string name="crypto_wpa">WPA</string>
     <string name="crypto_wpa2">WPA2</string>
 
+    <string name="tab_network">Networks</string>
+    <string name="tab_map">Map</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_show_raw_networks">Show Raw Networks</string>
     <string name="action_show_essids">Show ESSIDs</string>

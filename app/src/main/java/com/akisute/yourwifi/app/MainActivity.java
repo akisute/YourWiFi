@@ -1,5 +1,6 @@
 package com.akisute.yourwifi.app;
 
+import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,18 +14,28 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 
-public class MainActivity extends DaggeredActivity {
+public class MainActivity extends DaggeredActivity implements ActionBar.TabListener {
 
     @Inject
     GlobalEventBus mGlobalEventBus;
     @Inject
     GlobalSharedPreferences mGlobalSharedPreferences;
 
+    //-------------------------------------------------------------------------
+    // Activity
+    //-------------------------------------------------------------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showFragmentUsingGlobalSharedPreferences();
+
+        setupActionBar();
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        showNetworkTransactionUsingSharedPreferences(transaction);
+        transaction.commit();
+
         mGlobalEventBus.register(this);
         NetworkRecordingService.start(this);
     }
@@ -51,6 +62,38 @@ public class MainActivity extends DaggeredActivity {
         return false;
     }
 
+    //-------------------------------------------------------------------------
+    // TabListener
+    //-------------------------------------------------------------------------
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction transaction) {
+        switch (tab.getPosition()) {
+            case 0:
+                // network tab
+                showNetworkTransactionUsingSharedPreferences(transaction);
+                break;
+            case 1:
+                // map tab
+                showMapFragment(transaction);
+                break;
+        }
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction transaction) {
+        // Do nothing
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction transaction) {
+        // Do nothing
+    }
+
+    //-------------------------------------------------------------------------
+    // EventBus
+    //-------------------------------------------------------------------------
+
     @Subscribe
     public void onEssidListItemSelectedEvent(EssidListFragment.OnEssidListItemSelectedEvent event) {
         EssidDetailActivity.startActivity(this, event.getEssid());
@@ -58,37 +101,62 @@ public class MainActivity extends DaggeredActivity {
 
     @Subscribe
     public void onNetworkListDisplayModeChangeEvent(GlobalSharedPreferences.NetworkListDisplayMode.OnChangeEvent event) {
-        showFragmentUsingGlobalSharedPreferences();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        showNetworkTransactionUsingSharedPreferences(transaction);
+        transaction.commit();
     }
 
-    private void showFragmentUsingGlobalSharedPreferences() {
-        // TODO: do not switch fragment, if tabs other than network list is selected. ...possibly ok since container should not be shared between network lists and maps
+    //-------------------------------------------------------------------------
+    // Fragment managements
+    //-------------------------------------------------------------------------
+
+    private void setupActionBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+            ActionBar.Tab networkTab = actionBar.newTab();
+            networkTab.setText(R.string.tab_network);
+            networkTab.setTabListener(this);
+            actionBar.addTab(networkTab, 0);
+
+            ActionBar.Tab mapTab = actionBar.newTab();
+            mapTab.setText(R.string.tab_map);
+            mapTab.setTabListener(this);
+            actionBar.addTab(mapTab, 1);
+        }
+    }
+
+    private void showNetworkTransactionUsingSharedPreferences(FragmentTransaction transaction) {
+        // TODO: do not switch fragment if tabs other than network list is selected
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
-                showEssidFragment();
+                showEssidFragment(transaction);
                 break;
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
-                showRawNetworkFragment();
+                showRawNetworkFragment(transaction);
                 break;
             default:
-                showEssidFragment();
+                showEssidFragment(transaction);
                 break;
         }
     }
 
-    private void showRawNetworkFragment() {
+    private void showRawNetworkFragment(FragmentTransaction transaction) {
         // TODO: These fragments should be reused using getFragmentManager().putFragment()
         RawNetworkListFragment fragment = new RawNetworkListFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, fragment);
-        transaction.commit();
     }
 
-    private void showEssidFragment() {
+    private void showEssidFragment(FragmentTransaction transaction) {
         // TODO: These fragments should be reused using getFragmentManager().putFragment()
         EssidListFragment fragment = new EssidListFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment, fragment);
-        transaction.commit();
+    }
+
+    private void showMapFragment(FragmentTransaction transaction) {
+        // TODO: These fragments should be reused using getFragmentManager().putFragment()
+        MapFragment fragment = new MapFragment();
+        transaction.replace(R.id.fragment, fragment);
     }
 }
