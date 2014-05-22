@@ -11,6 +11,8 @@ import com.akisute.yourwifi.app.util.GlobalEventBus;
 import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 import com.squareup.otto.Subscribe;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
 
@@ -48,6 +50,19 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     @Override
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tab", getActionBar().getSelectedTab().getPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int position = savedInstanceState.getInt("tab");
+        getActionBar().getTabAt(position).select();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
@@ -65,6 +80,23 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     //-------------------------------------------------------------------------
     // TabListener
     //-------------------------------------------------------------------------
+
+    private void setupActionBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+            ActionBar.Tab networkTab = actionBar.newTab();
+            networkTab.setText(R.string.tab_network);
+            networkTab.setTabListener(this);
+            actionBar.addTab(networkTab, 0);
+
+            ActionBar.Tab mapTab = actionBar.newTab();
+            mapTab.setText(R.string.tab_map);
+            mapTab.setTabListener(this);
+            actionBar.addTab(mapTab, 1);
+        }
+    }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction transaction) {
@@ -109,23 +141,6 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     //-------------------------------------------------------------------------
     // Fragment managements
     //-------------------------------------------------------------------------
-
-    private void setupActionBar() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-            ActionBar.Tab networkTab = actionBar.newTab();
-            networkTab.setText(R.string.tab_network);
-            networkTab.setTabListener(this);
-            actionBar.addTab(networkTab, 0);
-
-            ActionBar.Tab mapTab = actionBar.newTab();
-            mapTab.setText(R.string.tab_map);
-            mapTab.setTabListener(this);
-            actionBar.addTab(mapTab, 1);
-        }
-    }
 
     private void showNetworkTransactionUsingSharedPreferences(FragmentTransaction transaction) {
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {

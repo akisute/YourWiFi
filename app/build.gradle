@@ -27,6 +27,7 @@ dependencies {
     compile "com.squareup.dagger:dagger-compiler:1.2.+"
     compile 'com.squareup:otto:1.3.+'
     compile 'com.jakewharton:butterknife:5.0.+'
+    compile 'com.intellij:annotations:+@jar' // for @NotNull and @Nullable, http://stackoverflow.com/questions/16690914/importing-notnull-or-nullable-and-android-studio-wont-compile
     compile files('libs/daggered-android.jar')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
