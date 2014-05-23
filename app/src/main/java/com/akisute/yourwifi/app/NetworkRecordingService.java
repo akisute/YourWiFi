@@ -105,9 +105,11 @@ public class NetworkRecordingService extends DaggeredService {
 
     private void handleStop() {
         removeNotification();
-        mNetworkScanManager.stopScan();
-        mLocationScanManager.stopScan();
-        mGlobalEventBus.unregister(this);
+        if (mNetworkScanManager.isScanning() || mLocationScanManager.isScanning()) {
+            mNetworkScanManager.stopScan();
+            mLocationScanManager.stopScan();
+            mGlobalEventBus.unregister(this);
+        }
         Log.d(NetworkRecordingService.class.getSimpleName(), String.format("Service Stopped."));
     }
 

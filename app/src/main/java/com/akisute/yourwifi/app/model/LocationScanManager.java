@@ -24,13 +24,15 @@ public class LocationScanManager implements LocationListener {
 
     private final SortedSet<Location> mLocations = new TreeSet<Location>(new LocationComparator());
 
+    private boolean mScanning;
+
     @Inject
     public LocationScanManager(LocationManager locationManager, GlobalEventBus globalEventBus) {
         mLocationManager = locationManager;
         mGlobalEventBus = globalEventBus;
     }
 
-    public void startScan() {
+    public boolean startScan() {
         mLocationManager.removeUpdates(this);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000, 5.0f, this);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10 * 1000, 50.0f, this);
@@ -44,12 +46,20 @@ public class LocationScanManager implements LocationListener {
             addLocation(networkLocation);
         }
 
+        mScanning = true;
         Log.d(getClass().getSimpleName(), String.format("Started scanning."));
+
+        return mScanning;
     }
 
     public void stopScan() {
+        mScanning = false;
         mLocationManager.removeUpdates(this);
         Log.d(getClass().getSimpleName(), String.format("Stopped scanning."));
+    }
+
+    public boolean isScanning() {
+        return mScanning;
     }
 
     public Location getCurrentLocation() {

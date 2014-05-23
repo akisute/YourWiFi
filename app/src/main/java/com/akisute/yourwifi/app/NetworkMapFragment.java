@@ -48,7 +48,7 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
             // Google Map is available, lets use it
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
-            setMapCameraPositionToCurrentLocation(false);
+            //setMapCameraPositionToCurrentLocation(false);
         } else {
             // Google Map is not available, just hide the map and display labels to explain
             mMapView.setVisibility(View.GONE);
@@ -98,36 +98,6 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-        }
-    }
-
-    private void setMapCameraPositionToCurrentLocationBounds(boolean animated) {
-        // Convert from distance(km) to latitude and longitude for current location, then use it as a boundary
-        // http://www.movable-type.co.uk/scripts/latlong.html
-
-        // XXX: This method doesn't work well in onCreateView/onResume since CameraUpdateFactory.newLatLngBounds() requires view bounds to be calculated properly
-
-        // TODO: calculation is broken :(
-        Location currentLocation = mLocationScanManager.getCurrentLocation();
-        double lat1 = currentLocation.getLatitude();
-        double lng1 = currentLocation.getLongitude();
-        double d = currentLocation.getAccuracy() * 1.5;
-        final double R = 6371 * 1000;
-        double dR = d / R;
-        final double bearingNorth = 0;
-        double latNorth = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(bearingNorth));
-        final double bearingEast = Math.PI / 2;
-        double latEast = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(bearingEast));
-        double lngEast = lng1 + Math.atan2(Math.sin(bearingEast) * Math.sin(dR) * Math.cos(lat1), Math.cos(dR) - Math.sin(lat1) * Math.sin(latEast));
-        double deltaNorth = Math.abs(latNorth - lat1);
-        double deltaEast = Math.abs(lngEast - lng1);
-        LatLng southwest = new LatLng(currentLocation.getLatitude() - deltaNorth * 2, currentLocation.getLongitude() - deltaEast * 2);
-        LatLng northeast = new LatLng(currentLocation.getLatitude() + deltaNorth * 2, currentLocation.getLongitude() + deltaEast * 2);
-        LatLngBounds bounds = new LatLngBounds(southwest, northeast);
-        if (animated) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
-        } else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
         }
     }
 
