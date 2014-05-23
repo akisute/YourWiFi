@@ -2,6 +2,7 @@ package com.akisute.yourwifi.app;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
@@ -38,6 +40,7 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("Godfuck", String.format("onCreateView for NetworkMapFragment %s", this));
         View view = inflater.inflate(R.layout.fragment_network_map, container, false);
         ButterKnife.inject(this, view);
 
@@ -48,7 +51,7 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
             // Google Map is available, lets use it
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
-            //setMapCameraPositionToCurrentLocation(false);
+            restoreCurrentMapCameraPosition(savedInstanceState);
         } else {
             // Google Map is not available, just hide the map and display labels to explain
             mMapView.setVisibility(View.GONE);
@@ -85,11 +88,29 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
+        saveCurrentMapCameraPosition(outState);
     }
 
     //-------------------------------------------------------------------------
     // GoogleMap Listeners
     //-------------------------------------------------------------------------
+
+    private void saveCurrentMapCameraPosition(@NotNull Bundle outState) {
+        CameraPosition cameraPosition = mMap.getCameraPosition();
+        outState.putParcelable("cameraPosition", cameraPosition);
+    }
+
+    private void restoreCurrentMapCameraPosition(@Nullable Bundle savedInstanceState) {
+        CameraPosition cameraPosition = null;
+        if (savedInstanceState != null) {
+            cameraPosition = savedInstanceState.getParcelable("cameraPosition");
+        }
+        if (cameraPosition != null) {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        } else {
+            setMapCameraPositionToCurrentLocation(false);
+        }
+    }
 
     private void setMapCameraPositionToCurrentLocation(boolean animated) {
         Location currentLocation = mLocationScanManager.getCurrentLocation();

@@ -14,11 +14,14 @@ import com.akisute.yourwifi.app.util.GlobalSharedPreferences;
 import com.squareup.otto.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
 
 public class MainActivity extends DaggeredActivity implements ActionBar.TabListener {
+
+    public static final String STATE_SELECTED_TAB_POSITION = "STATE_SELECTED_TAB_POSITION";
 
     @Inject
     GlobalEventBus mGlobalEventBus;
@@ -38,9 +41,9 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        restoreFragmentIfPossible();
         setupActionBar();
-        showNetworkTransactionUsingSharedPreferences();
+        restoreFragmentMembers();
+        restoreCurrentTabSelection(savedInstanceState);
 
         mGlobalEventBus.register(this);
         NetworkRecordingService.start(this);
@@ -60,7 +63,7 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
         if (actionBar != null) {
             ActionBar.Tab tab = actionBar.getSelectedTab();
             if (tab != null) {
-                outState.putInt("tab", tab.getPosition());
+                outState.putInt(STATE_SELECTED_TAB_POSITION, tab.getPosition());
             }
         }
     }
@@ -68,14 +71,7 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     @Override
     protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int position = savedInstanceState.getInt("tab", 0);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            ActionBar.Tab tab = actionBar.getTabAt(position);
-            if (tab != null) {
-                tab.select();
-            }
-        }
+        restoreCurrentTabSelection(savedInstanceState);
     }
 
     @Override
@@ -105,12 +101,27 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
             ActionBar.Tab networkTab = actionBar.newTab();
             networkTab.setText(R.string.tab_network);
             networkTab.setTabListener(this);
-            actionBar.addTab(networkTab, 0);
+            actionBar.addTab(networkTab, 0, false);
 
             ActionBar.Tab mapTab = actionBar.newTab();
             mapTab.setText(R.string.tab_map);
             mapTab.setTabListener(this);
-            actionBar.addTab(mapTab, 1);
+            actionBar.addTab(mapTab, 1, false);
+        }
+    }
+
+    private void restoreCurrentTabSelection(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            showNetworkTransactionUsingSharedPreferences();
+        } else if (savedInstanceState.containsKey(STATE_SELECTED_TAB_POSITION)) {
+            int position = savedInstanceState.getInt(STATE_SELECTED_TAB_POSITION);
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                ActionBar.Tab tab = actionBar.getTabAt(position);
+                if (tab != null) {
+                    tab.select();
+                }
+            }
         }
     }
 
@@ -158,7 +169,7 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     // Fragment managements
     //-------------------------------------------------------------------------
 
-    private void restoreFragmentIfPossible() {
+    private void restoreFragmentMembers() {
         // Fragments can be restored when Activity is re-created by rotation (or other reasons)
         // http://yan-note.blogspot.jp/2012/12/android-actionbarfragmenttabfragmentonc.html
         Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
@@ -191,29 +202,35 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
         if (mRawNetworkListFragment == null) {
             mRawNetworkListFragment = new RawNetworkListFragment();
         }
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment, mRawNetworkListFragment);
-        transaction.commit();
+        if (!mRawNetworkListFragment.isAdded()) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment, mRawNetworkListFragment);
+            transaction.commit();
+        }
     }
 
     private void showEssidFragment() {
         if (mEssidListFragment == null) {
             mEssidListFragment = new EssidListFragment();
         }
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment, mEssidListFragment);
-        transaction.commit();
+        if (!mEssidListFragment.isAdded()) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment, mEssidListFragment);
+            transaction.commit();
+        }
     }
 
     private void showMapFragment() {
         if (mNetworkMapFragment == null) {
             mNetworkMapFragment = new NetworkMapFragment();
         }
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment, mNetworkMapFragment);
-        transaction.commit();
+        if (!mNetworkMapFragment.isAdded()) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment, mNetworkMapFragment);
+            transaction.commit();
+        }
     }
 }
