@@ -1,6 +1,7 @@
 package com.akisute.yourwifi.app;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -37,10 +38,7 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mEssidListFragment = new EssidListFragment();
-        mRawNetworkListFragment = new RawNetworkListFragment();
-        mNetworkMapFragment = new NetworkMapFragment();
-
+        restoreFragmentIfPossible();
         setupActionBar();
         showNetworkTransactionUsingSharedPreferences();
 
@@ -160,6 +158,21 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     // Fragment managements
     //-------------------------------------------------------------------------
 
+    private void restoreFragmentIfPossible() {
+        // Fragments can be restored when Activity is re-created by rotation (or other reasons)
+        // http://yan-note.blogspot.jp/2012/12/android-actionbarfragmenttabfragmentonc.html
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
+        if (fragment == null) {
+            return;
+        } else if (fragment instanceof EssidListFragment) {
+            mEssidListFragment = (EssidListFragment) fragment;
+        } else if (fragment instanceof RawNetworkListFragment) {
+            mRawNetworkListFragment = (RawNetworkListFragment) fragment;
+        } else if (fragment instanceof NetworkMapFragment) {
+            mNetworkMapFragment = (NetworkMapFragment) fragment;
+        }
+    }
+
     private void showNetworkTransactionUsingSharedPreferences() {
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
@@ -175,6 +188,9 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     private void showRawNetworkFragment() {
+        if (mRawNetworkListFragment == null) {
+            mRawNetworkListFragment = new RawNetworkListFragment();
+        }
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment, mRawNetworkListFragment);
@@ -182,6 +198,9 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     private void showEssidFragment() {
+        if (mEssidListFragment == null) {
+            mEssidListFragment = new EssidListFragment();
+        }
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment, mEssidListFragment);
@@ -189,6 +208,9 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     }
 
     private void showMapFragment() {
+        if (mNetworkMapFragment == null) {
+            mNetworkMapFragment = new NetworkMapFragment();
+        }
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment, mNetworkMapFragment);
