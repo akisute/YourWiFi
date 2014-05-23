@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "YourWiFi": {
+            "applicationId": "QDqla70qFIIfsls2HQRo1qMZM2wCGTkwjlZImaYb", 
+            "masterKey": "thqRYl3QYEmpImZPFdl8bJup3Um6cx45zA7zkR2O"
+        }, 
+        "_default": {
+            "link": "YourWiFi"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}
