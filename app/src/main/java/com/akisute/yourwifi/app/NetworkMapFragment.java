@@ -2,7 +2,6 @@ package com.akisute.yourwifi.app;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
     MapView mMapView;
 
     private GoogleMap mMap;
+    private Bundle mOnMemorySavedInstanceState;
 
     //-------------------------------------------------------------------------
     // Fragment
@@ -40,18 +40,25 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("Godfuck", String.format("onCreateView for NetworkMapFragment %s", this));
         View view = inflater.inflate(R.layout.fragment_network_map, container, false);
         ButterKnife.inject(this, view);
 
-        mMapView.onCreate(savedInstanceState);
+        boolean hasSavedInstanceState = (savedInstanceState != null || mOnMemorySavedInstanceState != null);
+        if (savedInstanceState == null && mOnMemorySavedInstanceState != null) {
+            mMapView.onCreate(mOnMemorySavedInstanceState);
+            mOnMemorySavedInstanceState = null;
+        } else {
+            mMapView.onCreate(savedInstanceState);
+        }
         MapsInitializer.initialize(getActivity()); // Required before CameraUpdateFactory usage: http://stackoverflow.com/questions/19541915/google-maps-cameraupdatefactory-not-initalized
         mMap = mMapView.getMap();
         if (mMap != null) {
             // Google Map is available, lets use it
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
-            restoreCurrentMapCameraPosition(savedInstanceState);
+            if (!hasSavedInstanceState) {
+                setMapCameraPositionToCurrentLocation(false);
+            }
         } else {
             // Google Map is not available, just hide the map and display labels to explain
             mMapView.setVisibility(View.GONE);
@@ -62,6 +69,10 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
 
     @Override
     public void onDestroy() {
+        // Make sure to save current instance state to bundle, even when managing FragmentManager won't.
+        mOnMemorySavedInstanceState = new Bundle();
+        onSaveInstanceState(mOnMemorySavedInstanceState);
+
         super.onDestroy();
         mMapView.onDestroy();
     }
@@ -88,29 +99,11 @@ public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.On
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
-        saveCurrentMapCameraPosition(outState);
     }
 
     //-------------------------------------------------------------------------
     // GoogleMap Listeners
     //-------------------------------------------------------------------------
-
-    private void saveCurrentMapCameraPosition(@NotNull Bundle outState) {
-        CameraPosition cameraPosition = mMap.getCameraPosition();
-        outState.putParcelable("cameraPosition", cameraPosition);
-    }
-
-    private void restoreCurrentMapCameraPosition(@Nullable Bundle savedInstanceState) {
-        CameraPosition cameraPosition = null;
-        if (savedInstanceState != null) {
-            cameraPosition = savedInstanceState.getParcelable("cameraPosition");
-        }
-        if (cameraPosition != null) {
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        } else {
-            setMapCameraPositionToCurrentLocation(false);
-        }
-    }
 
     private void setMapCameraPositionToCurrentLocation(boolean animated) {
         Location currentLocation = mLocationScanManager.getCurrentLocation();
