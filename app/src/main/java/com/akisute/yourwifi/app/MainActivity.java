@@ -1,6 +1,7 @@
 package com.akisute.yourwifi.app;
 
 import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,6 +24,10 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     @Inject
     GlobalSharedPreferences mGlobalSharedPreferences;
 
+    private EssidListFragment mEssidListFragment;
+    private RawNetworkListFragment mRawNetworkListFragment;
+    private NetworkMapFragment mNetworkMapFragment;
+
     //-------------------------------------------------------------------------
     // Activity
     //-------------------------------------------------------------------------
@@ -32,11 +37,12 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupActionBar();
+        mEssidListFragment = new EssidListFragment();
+        mRawNetworkListFragment = new RawNetworkListFragment();
+        mNetworkMapFragment = new NetworkMapFragment();
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        showNetworkTransactionUsingSharedPreferences(transaction);
-        transaction.commit();
+        setupActionBar();
+        showNetworkTransactionUsingSharedPreferences();
 
         mGlobalEventBus.register(this);
         NetworkRecordingService.start(this);
@@ -112,14 +118,16 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction transaction) {
+        // Not using provided transaction since there are many bugs including:
+        // - Always null (http://yan-note.blogspot.jp/2012/10/android-fragmenttab.html)
         switch (tab.getPosition()) {
             case 0:
                 // network tab
-                showNetworkTransactionUsingSharedPreferences(transaction);
+                showNetworkTransactionUsingSharedPreferences();
                 break;
             case 1:
                 // map tab
-                showMapFragment(transaction);
+                showMapFragment();
                 break;
         }
     }
@@ -145,41 +153,45 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
 
     @Subscribe
     public void onNetworkListDisplayModeChangeEvent(GlobalSharedPreferences.NetworkListDisplayMode.OnChangeEvent event) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        showNetworkTransactionUsingSharedPreferences(transaction);
-        transaction.commit();
+        showNetworkTransactionUsingSharedPreferences();
     }
 
     //-------------------------------------------------------------------------
     // Fragment managements
     //-------------------------------------------------------------------------
 
-    private void showNetworkTransactionUsingSharedPreferences(FragmentTransaction transaction) {
+    private void showNetworkTransactionUsingSharedPreferences() {
         switch (mGlobalSharedPreferences.getNetworkListDisplayMode()) {
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_ESSIDS:
-                showEssidFragment(transaction);
+                showEssidFragment();
                 break;
             case GlobalSharedPreferences.NetworkListDisplayMode.SHOW_RAW_NETWORKS:
-                showRawNetworkFragment(transaction);
+                showRawNetworkFragment();
                 break;
             default:
-                showEssidFragment(transaction);
+                showEssidFragment();
                 break;
         }
     }
 
-    private void showRawNetworkFragment(FragmentTransaction transaction) {
-        RawNetworkListFragment fragment = new RawNetworkListFragment();
-        transaction.replace(R.id.fragment, fragment);
+    private void showRawNetworkFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment, mRawNetworkListFragment);
+        transaction.commit();
     }
 
-    private void showEssidFragment(FragmentTransaction transaction) {
-        EssidListFragment fragment = new EssidListFragment();
-        transaction.replace(R.id.fragment, fragment);
+    private void showEssidFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment, mEssidListFragment);
+        transaction.commit();
     }
 
-    private void showMapFragment(FragmentTransaction transaction) {
-        MapFragment fragment = new MapFragment();
-        transaction.replace(R.id.fragment, fragment);
+    private void showMapFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment, mNetworkMapFragment);
+        transaction.commit();
     }
 }

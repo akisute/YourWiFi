@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MapFragment extends DaggeredFragment implements GoogleMap.OnMyLocationButtonClickListener {
+public class NetworkMapFragment extends DaggeredFragment implements GoogleMap.OnMyLocationButtonClickListener {
 
     @Inject
     LocationScanManager mLocationScanManager;
@@ -38,7 +38,7 @@ public class MapFragment extends DaggeredFragment implements GoogleMap.OnMyLocat
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_network_map, container, false);
         ButterKnife.inject(this, view);
 
         mMapView.onCreate(savedInstanceState);
