@@ -18,6 +18,13 @@ app.use(express.csrf());
 app.use(parseExpressHttpsRedirect());
 app.use(parseExpressCookieSession());
 
+// Custom app configuration to set global variables for template engine
+app.use(function(request, response, next) {
+  response.locals.user = Parse.User.current();
+  response.locals._csrf = request.session._csrf;
+  next();
+});
+
 // URL routing section
 var app_index = require("cloud/apps/index.js");
 var app_usersession = require("cloud/apps/usersession.js");

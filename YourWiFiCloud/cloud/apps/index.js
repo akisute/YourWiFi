@@ -1,9 +1,7 @@
 "use strict";
 
 exports.GETHandler = function(request, response) {
-  response.render("index", {
-    user : Parse.User.current()
-  });
+  response.render("index");
 }
 
 exports.RedirectHandler = function(request, response) {

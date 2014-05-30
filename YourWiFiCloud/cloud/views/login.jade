@@ -9,8 +9,22 @@ html
       .container
         header.page-header
           h1 Login
+        if locals.error
+          section#alert
+            .alert.alert-danger.alert-dismissable
+              | <strong>Error:</strong> #{locals.error.message}
+              button.close(data-dismiss="alert")
+                span.glyphicon.glyphicon-remove
         section#content
-          p TODO: some beautiful form comes out of here
+          form(role="form", method="POST", action="/login")
+            .input-group.input-group-lg
+              span.input-group-addon Username
+              input.form-control(type="text", name="username", placeholder="Username")
+            .input-group.input-group-lg
+              span.input-group-addon Password
+              input.form-control(type="password", name="password", placeholder="Password")
+            input(type="hidden", name="_csrf", value=_csrf)
+            button.btn.btn-primary.btn-lg(type="submit") Login
     include base-footer
     script.
       // do nothing
