@@ -84,6 +84,7 @@ public class MainActivity extends DaggeredActivity implements ActionBar.TabListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
+                SettingsActivity.startActivity(this);
                 return true;
         }
         return false;

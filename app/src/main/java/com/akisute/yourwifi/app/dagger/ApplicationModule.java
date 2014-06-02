@@ -16,6 +16,8 @@ import com.akisute.yourwifi.app.MainActivity;
 import com.akisute.yourwifi.app.NetworkMapFragment;
 import com.akisute.yourwifi.app.NetworkRecordingService;
 import com.akisute.yourwifi.app.RawNetworkListFragment;
+import com.akisute.yourwifi.app.SettingsActivity;
+import com.akisute.yourwifi.app.SettingsFragment;
 import com.akisute.yourwifi.app.model.BssidListAdapter;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.LocationScanManager;
@@ -45,6 +47,9 @@ import dagger.Provides;
                 // Detail Activity
                 EssidDetailActivity.class,
                 EssidDetailFragment.class,
+                // Settings Activity
+                SettingsActivity.class,
+                SettingsFragment.class,
                 // Service
                 NetworkRecordingService.class
         }

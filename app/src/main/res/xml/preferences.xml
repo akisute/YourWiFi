@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_category_cloud">
+        <Preference
+            android:key="@string/settings_login_status_key"
+            android:persistent="false"
+            android:selectable="true"
+            android:summary="@string/settings_login_status_summary_notloggedin"
+            android:title="@string/settings_login_status_title_notloggedin" />
+    </PreferenceCategory>
+</PreferenceScreen>

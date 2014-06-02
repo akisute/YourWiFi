@@ -16,6 +16,8 @@
     <string name="tab_map">Map</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_login">Login</string>
+    <string name="action_logout">Logout</string>
     <string name="action_show_raw_networks">Show Raw Networks</string>
     <string name="action_show_essids">Show ESSIDs</string>
 
@@ -26,6 +28,14 @@
         <!-- https://code.google.com/p/android/issues/detail?id=8287 -->
         <item quantity="other">%1$s (%2$d Networks)</item>
     </plurals>
+
+    <string name="activity_settings_title">Settings</string>
+    <string name="settings_category_cloud">Cloud</string>
+    <string name="settings_login_status_key">login_status</string>
+    <string name="settings_login_status_title_login">You are logged in as %1$s.</string>
+    <string name="settings_login_status_title_notloggedin">You are not logged in.</string>
+    <string name="settings_login_status_summary_login" />
+    <string name="settings_login_status_summary_notloggedin">Tap here to log in to the Cloud.</string>
 
     <string name="list_essid_item_description">%1$d BSSIDs</string>
     <plurals name="list_essid_item_description">
