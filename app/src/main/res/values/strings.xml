@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">YourWiFi</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
     <string name="network_unknown">Unknown</string>
     <string name="network_wifi">WiFi</string>
     <string name="network_cellular">Cellular</string>

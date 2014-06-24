@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 
 import com.akisute.android.daggered.DaggeredApplicationModule;
 import com.akisute.android.daggered.ForApplication;
+import com.akisute.yourwifi.app.CloudLoginDialogFragment;
 import com.akisute.yourwifi.app.EssidDetailActivity;
 import com.akisute.yourwifi.app.EssidDetailFragment;
 import com.akisute.yourwifi.app.EssidListFragment;
@@ -18,6 +19,7 @@ import com.akisute.yourwifi.app.NetworkRecordingService;
 import com.akisute.yourwifi.app.RawNetworkListFragment;
 import com.akisute.yourwifi.app.SettingsActivity;
 import com.akisute.yourwifi.app.SettingsFragment;
+import com.akisute.yourwifi.app.cloud.CloudManager;
 import com.akisute.yourwifi.app.model.BssidListAdapter;
 import com.akisute.yourwifi.app.model.EssidListAdapter;
 import com.akisute.yourwifi.app.model.LocationScanManager;
@@ -50,6 +52,8 @@ import dagger.Provides;
                 // Settings Activity
                 SettingsActivity.class,
                 SettingsFragment.class,
+                // Cloud Login Activity
+                CloudLoginDialogFragment.class,
                 // Service
                 NetworkRecordingService.class
         }
@@ -90,6 +94,12 @@ public class ApplicationModule {
     @Singleton
     LocationScanManager providesLocationScanManager(LocationManager locationManager, GlobalEventBus globalEventBus) {
         return new LocationScanManager(locationManager, globalEventBus);
+    }
+
+    @Provides
+    @Singleton
+    CloudManager providesCloudManager() {
+        return new CloudManager();
     }
 
     @Provides

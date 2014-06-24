@@ -7,8 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.akisute.android.daggered.DaggeredActivity;
+import com.akisute.yourwifi.app.cloud.CloudManager;
+
+import javax.inject.Inject;
 
 public class SettingsActivity extends DaggeredActivity {
+
+    @Inject
+    CloudManager mCloudManager;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
@@ -34,9 +40,9 @@ public class SettingsActivity extends DaggeredActivity {
         MenuItem loginItem = menu.findItem(R.id.action_login);
         MenuItem logoutItem = menu.findItem(R.id.action_logout);
 
-        // TODO: login state check
-        loginItem.setVisible(true);
-        logoutItem.setVisible(false);
+        boolean isLoggedIn = mCloudManager.isLoggedIn();
+        loginItem.setVisible(!isLoggedIn);
+        logoutItem.setVisible(isLoggedIn);
 
         return true;
     }
@@ -45,8 +51,10 @@ public class SettingsActivity extends DaggeredActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_login:
+                // TODO: show login dialog
                 return true;
             case R.id.action_logout:
+                // TODO: logout via API
                 return true;
         }
         return false;
