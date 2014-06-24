@@ -1,5 +1,6 @@
 package com.akisute.yourwifi.app;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,7 +52,9 @@ public class SettingsActivity extends DaggeredActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_login:
-                // TODO: show login dialog
+                CloudLoginDialogFragment dialogFragment = new CloudLoginDialogFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                dialogFragment.show(fragmentManager, dialogFragment.getClass().getSimpleName());
                 return true;
             case R.id.action_logout:
                 // TODO: logout via API
